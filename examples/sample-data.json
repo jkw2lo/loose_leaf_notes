@@ -1,0 +1,1273 @@
+{
+  "teas": [
+    {
+      "brand": "Menghai Tea Factory",
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "cultivar": "",
+      "example": true,
+      "fam": "shou",
+      "finished": "2026-09-30T18:00:00.000Z",
+      "harvest": "2018",
+      "lib": "Menghai 7572",
+      "name": "Menghai 7572",
+      "notes": "",
+      "origin": "Menghai, Xishuangbanna, Yunnan, China",
+      "shop": "",
+      "stock": {
+        "cur": "$",
+        "g": 100,
+        "price": 18,
+        "since": "2026-08-15T00:00:00.000Z"
+      },
+      "verdict": {
+        "note": "A dependable everyday shou. Thick and cocoa-sweet once it had two rinses, but never surprising.",
+        "rebuy": "maybe",
+        "score": 6
+      },
+      "id": "t_7572"
+    },
+    {
+      "brand": "Mountain Stream Teas",
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "cultivar": "Da Bai",
+      "example": true,
+      "fam": "white",
+      "harvest": "Spring 2023",
+      "lib": "Bái Mǔ Dān",
+      "name": "Bái Mǔ Dān",
+      "notes": "",
+      "origin": "Zhenghe, Nanping, Fujian, China",
+      "shop": "",
+      "id": "t_baimu"
+    },
+    {
+      "brand": "Shizuku Tea House",
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "cultivar": "Saemidori",
+      "example": true,
+      "fam": "jpgreen",
+      "harvest": "2026",
+      "lib": "Gyokuro",
+      "name": "Yame Gyokuro",
+      "notes": "",
+      "origin": "Hoshino, Yame, Fukuoka, Japan",
+      "shop": "",
+      "id": "t_gyok"
+    },
+    {
+      "brand": "Shizuku Tea House",
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "cultivar": "Yutakamidori",
+      "example": true,
+      "fam": "jpgreen",
+      "finished": "2026-10-05T01:15:36.893Z",
+      "harvest": "Shincha 2026",
+      "lib": "Sencha",
+      "name": "Kagoshima Sencha",
+      "notes": "Deep green needles, very fine. Keep in the fridge, sealed.",
+      "origin": "Chiran, Kagoshima, Japan",
+      "producer": {
+        "g": 5,
+        "ml": 150,
+        "notes": "Pour every last drop into the cup.",
+        "sched": [
+          60,
+          10,
+          30
+        ],
+        "style": "kyusu",
+        "temp": 70
+      },
+      "shop": "",
+      "id": "t_kago"
+    },
+    {
+      "brand": "Mountain Stream Teas",
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "cultivar": "Qing Xin",
+      "example": true,
+      "fam": "oolong_jade",
+      "harvest": "Winter 2025",
+      "lib": "Lí Shān",
+      "name": "Lí Shān",
+      "notes": "",
+      "origin": "Fushoushan, Lishan, Taichung, Taiwan",
+      "shop": "",
+      "id": "t_lishan"
+    },
+    {
+      "brand": "Phoenix Peak Teas",
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "cultivar": "",
+      "example": true,
+      "fam": "dancong",
+      "harvest": "Spring 2025",
+      "lib": "Mì Lán Xiāng",
+      "name": "Mì Lán Xiāng",
+      "notes": "",
+      "origin": "Wudong, Chaozhou, Guangdong, China",
+      "shop": "",
+      "id": "t_milan"
+    },
+    {
+      "brand": "Wuyi Rock Co-op",
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "cultivar": "Rou Gui",
+      "example": true,
+      "fam": "yancha",
+      "harvest": "Spring 2025",
+      "lib": "Ròu Guì",
+      "name": "Ròu Guì",
+      "notes": "Medium-heavy charcoal roast, rested about a year.",
+      "origin": "Wuyi Shan, Nanping, Fujian, China",
+      "shop": "",
+      "id": "t_rougui"
+    },
+    {
+      "brand": "Old Tree Collective",
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "cultivar": "",
+      "example": true,
+      "fam": "sheng",
+      "harvest": "Spring 2019 pressing",
+      "lib": "Yìwǔ",
+      "name": "2019 Yiwu Gushu",
+      "notes": "357 g cake, dry storage.",
+      "origin": "Mansa, Yiwu, Xishuangbanna, Yunnan, China",
+      "shop": "",
+      "id": "t_yiwu"
+    }
+  ],
+  "sessions": [
+    {
+      "at": "2026-09-02T10:00:00.000Z",
+      "axes": {
+        "aroma": 3,
+        "bite": 0,
+        "body": 2,
+        "finish": 3,
+        "qi": 2,
+        "sweet": 4
+      },
+      "cat": "white",
+      "example": true,
+      "g": 3,
+      "liq": "pale",
+      "ml": 400,
+      "notes": "Easy desk tea.",
+      "rating": 7,
+      "rinse": false,
+      "steeps": [
+        {
+          "liq": "pale",
+          "note": "",
+          "s": 180,
+          "score": 3,
+          "tags": [
+            "honey",
+            "fresh grass"
+          ]
+        },
+        {
+          "liq": "straw",
+          "note": "Dried apricot after topping up",
+          "s": 300,
+          "score": 4,
+          "tags": [
+            "dried fruit"
+          ]
+        }
+      ],
+      "style": "grandpa",
+      "tags": [
+        "honey",
+        "fresh grass",
+        "dried fruit"
+      ],
+      "tea": "Bái Mǔ Dān",
+      "teaId": "t_baimu",
+      "temp": 88,
+      "vesselId": "",
+      "vesselName": "Grandpa glass",
+      "vesselType": "tumbler",
+      "water": "Filtered",
+      "id": "s_b1"
+    },
+    {
+      "at": "2026-10-01T14:05:00.000Z",
+      "axes": {
+        "aroma": 3,
+        "bite": 1,
+        "body": 5,
+        "finish": 3,
+        "qi": 3,
+        "sweet": 4
+      },
+      "cat": "jpgreen",
+      "example": true,
+      "g": 6,
+      "liq": "spring",
+      "ml": 60,
+      "notes": "Brothy first cup. Could try 45° next time.",
+      "rating": 8,
+      "rinse": false,
+      "steeps": [
+        {
+          "liq": "spring",
+          "note": "Dashi-like",
+          "s": 120,
+          "score": 5,
+          "tags": [
+            "umami",
+            "seaweed"
+          ]
+        },
+        {
+          "liq": "jade",
+          "note": "",
+          "s": 20,
+          "score": 4,
+          "tags": [
+            "umami",
+            "snap pea"
+          ]
+        },
+        {
+          "liq": "jade",
+          "note": "",
+          "s": 40,
+          "score": 3,
+          "tags": [
+            "fresh grass"
+          ]
+        }
+      ],
+      "style": "kyusu",
+      "tags": [
+        "umami",
+        "seaweed",
+        "snap pea",
+        "fresh grass"
+      ],
+      "tea": "Yame Gyokuro",
+      "teaId": "t_gyok",
+      "temp": 50,
+      "vesselId": "",
+      "vesselName": "Houhin",
+      "vesselType": "houhin",
+      "water": "Low-TDS bottled",
+      "id": "s_g1"
+    },
+    {
+      "at": "2026-09-12T07:40:00.000Z",
+      "axes": {
+        "aroma": 3,
+        "bite": 4,
+        "body": 3,
+        "finish": 2,
+        "qi": 2,
+        "sweet": 2
+      },
+      "cat": "jpgreen",
+      "example": true,
+      "g": 6,
+      "liq": "emerald",
+      "ml": 180,
+      "notes": "Too hot. The astringency covered the sweetness.",
+      "rating": 6,
+      "rinse": false,
+      "steeps": [
+        {
+          "liq": "emerald",
+          "note": "Astringent edge right away",
+          "s": 60,
+          "score": 3,
+          "tags": [
+            "fresh grass",
+            "seaweed"
+          ]
+        },
+        {
+          "liq": "matcha",
+          "note": "",
+          "s": 20,
+          "score": 3,
+          "tags": [
+            "umami"
+          ]
+        },
+        {
+          "liq": "olive",
+          "note": "Flat",
+          "s": 45,
+          "score": 2,
+          "tags": []
+        }
+      ],
+      "style": "kyusu",
+      "tags": [
+        "fresh grass",
+        "seaweed",
+        "umami"
+      ],
+      "tea": "Kagoshima Sencha",
+      "teaId": "t_kago",
+      "temp": 80,
+      "vesselId": "",
+      "vesselName": "Kyusu",
+      "vesselType": "kyusu",
+      "water": "Filtered",
+      "id": "s_k1"
+    },
+    {
+      "at": "2026-09-26T07:35:00.000Z",
+      "axes": {
+        "aroma": 3,
+        "bite": 2,
+        "body": 4,
+        "finish": 3,
+        "qi": 2,
+        "sweet": 4
+      },
+      "cat": "jpgreen",
+      "example": true,
+      "g": 6,
+      "liq": "emerald",
+      "ml": 180,
+      "notes": "Dropping to 70° fixed it. Deep green and brothy.",
+      "rating": 8,
+      "rinse": false,
+      "steeps": [
+        {
+          "liq": "emerald",
+          "note": "Brothy",
+          "s": 60,
+          "score": 4,
+          "tags": [
+            "umami",
+            "seaweed",
+            "snap pea"
+          ]
+        },
+        {
+          "liq": "matcha",
+          "note": "Cloudy and vivid",
+          "s": 15,
+          "score": 4,
+          "tags": [
+            "umami"
+          ]
+        },
+        {
+          "liq": "jade",
+          "note": "",
+          "s": 30,
+          "score": 3,
+          "tags": [
+            "fresh grass"
+          ]
+        },
+        {
+          "liq": "olive",
+          "note": "",
+          "s": 60,
+          "score": 2,
+          "tags": []
+        }
+      ],
+      "style": "kyusu",
+      "tags": [
+        "umami",
+        "seaweed",
+        "snap pea",
+        "fresh grass"
+      ],
+      "tea": "Kagoshima Sencha",
+      "teaId": "t_kago",
+      "temp": 70,
+      "vesselId": "",
+      "vesselName": "Kyusu",
+      "vesselType": "kyusu",
+      "water": "Filtered",
+      "id": "s_k2"
+    },
+    {
+      "at": "2026-10-04T07:30:00.000Z",
+      "axes": {
+        "aroma": 4,
+        "bite": 1,
+        "body": 4,
+        "finish": 4,
+        "qi": 3,
+        "sweet": 5
+      },
+      "cat": "jpgreen",
+      "example": true,
+      "g": 5,
+      "liq": "emerald",
+      "ml": 180,
+      "notes": "Best yet. Slightly less leaf and a cooler pour.",
+      "rating": 9,
+      "rinse": false,
+      "steeps": [
+        {
+          "liq": "emerald",
+          "note": "Thick, sweet, marine",
+          "s": 60,
+          "score": 5,
+          "tags": [
+            "umami",
+            "butter"
+          ]
+        },
+        {
+          "liq": "matcha",
+          "note": "",
+          "s": 12,
+          "score": 4,
+          "tags": [
+            "seaweed"
+          ]
+        },
+        {
+          "liq": "jade",
+          "note": "",
+          "s": 30,
+          "score": 4,
+          "tags": [
+            "snap pea"
+          ]
+        },
+        {
+          "liq": "spring",
+          "note": "Spent",
+          "s": 60,
+          "score": 2,
+          "tags": []
+        }
+      ],
+      "style": "kyusu",
+      "tags": [
+        "umami",
+        "butter",
+        "seaweed",
+        "snap pea"
+      ],
+      "tea": "Kagoshima Sencha",
+      "teaId": "t_kago",
+      "temp": 68,
+      "vesselId": "",
+      "vesselName": "Kyusu",
+      "vesselType": "kyusu",
+      "water": "Low-TDS bottled",
+      "id": "s_k3"
+    },
+    {
+      "at": "2026-09-15T07:50:00.000Z",
+      "axes": {
+        "aroma": 4,
+        "bite": 1,
+        "body": 4,
+        "finish": 3,
+        "qi": 2,
+        "sweet": 3
+      },
+      "cat": "oolong_jade",
+      "example": true,
+      "g": 6,
+      "liq": "pale",
+      "ml": 100,
+      "notes": "Creamy and clean. First steep too timid.",
+      "rating": 7,
+      "rinse": true,
+      "steeps": [
+        {
+          "liq": "pale",
+          "note": "Leaves still tight",
+          "s": 45,
+          "score": 3,
+          "tags": [
+            "lilac"
+          ]
+        },
+        {
+          "liq": "straw",
+          "note": "",
+          "s": 30,
+          "score": 4,
+          "tags": [
+            "lilac",
+            "butter"
+          ]
+        },
+        {
+          "liq": "straw",
+          "note": "",
+          "s": 35,
+          "score": 4,
+          "tags": [
+            "butter"
+          ]
+        },
+        {
+          "liq": "straw",
+          "note": "",
+          "s": 45,
+          "score": 3,
+          "tags": [
+            "fresh grass"
+          ]
+        },
+        {
+          "liq": "pale",
+          "note": "",
+          "s": 60,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "pale",
+          "note": "",
+          "s": 90,
+          "score": 2,
+          "tags": []
+        }
+      ],
+      "style": "gongfu",
+      "tags": [
+        "lilac",
+        "butter",
+        "fresh grass"
+      ],
+      "tea": "Lí Shān",
+      "teaId": "t_lishan",
+      "temp": 95,
+      "vesselId": "",
+      "vesselName": "Gaiwan",
+      "vesselType": "gaiwan",
+      "water": "Spring",
+      "id": "s_l1"
+    },
+    {
+      "at": "2026-09-20T16:30:00.000Z",
+      "axes": {
+        "aroma": 5,
+        "bite": 2,
+        "body": 3,
+        "finish": 4,
+        "qi": 3,
+        "sweet": 4
+      },
+      "cat": "dancong",
+      "example": true,
+      "g": 6,
+      "liq": "gold",
+      "ml": 90,
+      "notes": "Flash steeps kept the bitterness away entirely.",
+      "rating": 9,
+      "rinse": true,
+      "steeps": [
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 5,
+          "score": 4,
+          "tags": [
+            "honey",
+            "orchid"
+          ]
+        },
+        {
+          "liq": "honey",
+          "note": "Lid smells of honeyed lychee",
+          "s": 5,
+          "score": 5,
+          "tags": [
+            "lychee",
+            "honey"
+          ]
+        },
+        {
+          "liq": "honey",
+          "note": "",
+          "s": 7,
+          "score": 5,
+          "tags": [
+            "orchid"
+          ]
+        },
+        {
+          "liq": "honey",
+          "note": "",
+          "s": 10,
+          "score": 4,
+          "tags": [
+            "stone fruit"
+          ]
+        },
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 12,
+          "score": 4,
+          "tags": []
+        },
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 15,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "lemon",
+          "note": "",
+          "s": 20,
+          "score": 3,
+          "tags": []
+        }
+      ],
+      "style": "gongfu",
+      "tags": [
+        "honey",
+        "orchid",
+        "lychee",
+        "stone fruit"
+      ],
+      "tea": "Mì Lán Xiāng",
+      "teaId": "t_milan",
+      "temp": 95,
+      "vesselId": "",
+      "vesselName": "Chaozhou pot",
+      "vesselType": "chaozhou",
+      "water": "Spring",
+      "id": "s_m1"
+    },
+    {
+      "at": "2026-09-05T19:10:00.000Z",
+      "axes": {
+        "aroma": 5,
+        "bite": 2,
+        "body": 4,
+        "finish": 4,
+        "qi": 4,
+        "sweet": 3
+      },
+      "cat": "yancha",
+      "example": true,
+      "g": 7,
+      "liq": "amber",
+      "ml": 100,
+      "notes": "Cinnamon bark and dark cherry, long mineral finish.",
+      "rating": 8,
+      "rinse": true,
+      "steeps": [
+        {
+          "liq": "amber",
+          "note": "",
+          "s": 8,
+          "score": 4,
+          "tags": [
+            "cinnamon",
+            "charcoal"
+          ]
+        },
+        {
+          "liq": "orange",
+          "note": "Peak",
+          "s": 8,
+          "score": 5,
+          "tags": [
+            "cinnamon",
+            "stone fruit"
+          ]
+        },
+        {
+          "liq": "orange",
+          "note": "",
+          "s": 10,
+          "score": 4,
+          "tags": [
+            "mineral"
+          ]
+        },
+        {
+          "liq": "copper",
+          "note": "",
+          "s": 12,
+          "score": 4,
+          "tags": [
+            "mineral"
+          ]
+        },
+        {
+          "liq": "amber",
+          "note": "",
+          "s": 15,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "amber",
+          "note": "",
+          "s": 20,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "honey",
+          "note": "",
+          "s": 30,
+          "score": 2,
+          "tags": []
+        },
+        {
+          "liq": "honey",
+          "note": "",
+          "s": 45,
+          "score": 2,
+          "tags": []
+        }
+      ],
+      "style": "gongfu",
+      "tags": [
+        "cinnamon",
+        "charcoal",
+        "stone fruit",
+        "mineral"
+      ],
+      "tea": "Ròu Guì",
+      "teaId": "t_rougui",
+      "temp": 100,
+      "vesselId": "",
+      "vesselName": "Yixing pot",
+      "vesselType": "yixing",
+      "water": "Spring",
+      "id": "s_r1"
+    },
+    {
+      "at": "2026-09-19T19:30:00.000Z",
+      "axes": {
+        "aroma": 5,
+        "bite": 2,
+        "body": 5,
+        "finish": 5,
+        "qi": 5,
+        "sweet": 4
+      },
+      "cat": "yancha",
+      "example": true,
+      "g": 8,
+      "liq": "orange",
+      "ml": 100,
+      "notes": "More leaf, faster pours. Fuller and longer.",
+      "rating": 9,
+      "rinse": true,
+      "steeps": [
+        {
+          "liq": "orange",
+          "note": "",
+          "s": 5,
+          "score": 4,
+          "tags": [
+            "cinnamon"
+          ]
+        },
+        {
+          "liq": "copper",
+          "note": "Thick",
+          "s": 5,
+          "score": 5,
+          "tags": [
+            "cinnamon",
+            "charcoal"
+          ]
+        },
+        {
+          "liq": "copper",
+          "note": "Rock rhyme",
+          "s": 6,
+          "score": 5,
+          "tags": [
+            "mineral",
+            "stone fruit"
+          ]
+        },
+        {
+          "liq": "copper",
+          "note": "",
+          "s": 8,
+          "score": 4,
+          "tags": [
+            "mineral"
+          ]
+        },
+        {
+          "liq": "orange",
+          "note": "",
+          "s": 10,
+          "score": 4,
+          "tags": []
+        },
+        {
+          "liq": "amber",
+          "note": "",
+          "s": 15,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "amber",
+          "note": "",
+          "s": 20,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "honey",
+          "note": "Floral turn",
+          "s": 30,
+          "score": 3,
+          "tags": [
+            "orchid"
+          ]
+        },
+        {
+          "liq": "honey",
+          "note": "",
+          "s": 45,
+          "score": 2,
+          "tags": []
+        }
+      ],
+      "style": "gongfu",
+      "tags": [
+        "cinnamon",
+        "charcoal",
+        "mineral",
+        "stone fruit",
+        "orchid"
+      ],
+      "tea": "Ròu Guì",
+      "teaId": "t_rougui",
+      "temp": 100,
+      "vesselId": "",
+      "vesselName": "Yixing pot",
+      "vesselType": "yixing",
+      "water": "Spring",
+      "id": "s_r2"
+    },
+    {
+      "at": "2026-10-03T08:20:00.000Z",
+      "axes": {
+        "aroma": 3,
+        "bite": 2,
+        "body": 3,
+        "finish": 3,
+        "qi": 3,
+        "sweet": 3
+      },
+      "cat": "yancha",
+      "example": true,
+      "g": 7,
+      "liq": "honey",
+      "ml": 100,
+      "notes": "95° and the gaiwan muted the roast. Back to boiling and clay.",
+      "rating": 7,
+      "rinse": true,
+      "steeps": [
+        {
+          "liq": "honey",
+          "note": "",
+          "s": 8,
+          "score": 3,
+          "tags": [
+            "cinnamon"
+          ]
+        },
+        {
+          "liq": "amber",
+          "note": "",
+          "s": 8,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "amber",
+          "note": "",
+          "s": 10,
+          "score": 3,
+          "tags": [
+            "mineral"
+          ]
+        },
+        {
+          "liq": "amber",
+          "note": "",
+          "s": 15,
+          "score": 2,
+          "tags": []
+        },
+        {
+          "liq": "honey",
+          "note": "",
+          "s": 20,
+          "score": 2,
+          "tags": []
+        },
+        {
+          "liq": "honey",
+          "note": "",
+          "s": 30,
+          "score": 2,
+          "tags": []
+        }
+      ],
+      "style": "gongfu",
+      "tags": [
+        "cinnamon",
+        "mineral"
+      ],
+      "tea": "Ròu Guì",
+      "teaId": "t_rougui",
+      "temp": 95,
+      "vesselId": "",
+      "vesselName": "Gaiwan",
+      "vesselType": "gaiwan",
+      "water": "Spring",
+      "id": "s_r3"
+    },
+    {
+      "at": "2026-09-09T20:15:00.000Z",
+      "axes": {
+        "aroma": 2,
+        "bite": 1,
+        "body": 5,
+        "finish": 2,
+        "qi": 3,
+        "sweet": 3
+      },
+      "cat": "shou",
+      "example": true,
+      "g": 7,
+      "liq": "chestnut",
+      "ml": 110,
+      "notes": "Thick and reliable. A second rinse would help.",
+      "rating": 6,
+      "rinse": true,
+      "steeps": [
+        {
+          "liq": "garnet",
+          "note": "",
+          "s": 10,
+          "score": 3,
+          "tags": [
+            "forest floor"
+          ]
+        },
+        {
+          "liq": "chestnut",
+          "note": "",
+          "s": 10,
+          "score": 4,
+          "tags": [
+            "cocoa"
+          ]
+        },
+        {
+          "liq": "mahogany",
+          "note": "",
+          "s": 12,
+          "score": 4,
+          "tags": [
+            "cocoa",
+            "leather"
+          ]
+        },
+        {
+          "liq": "mahogany",
+          "note": "",
+          "s": 15,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "chestnut",
+          "note": "",
+          "s": 20,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "chestnut",
+          "note": "",
+          "s": 30,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "garnet",
+          "note": "",
+          "s": 45,
+          "score": 2,
+          "tags": []
+        },
+        {
+          "liq": "garnet",
+          "note": "",
+          "s": 60,
+          "score": 2,
+          "tags": []
+        }
+      ],
+      "style": "gongfu",
+      "tags": [
+        "forest floor",
+        "cocoa",
+        "leather"
+      ],
+      "tea": "Menghai 7572",
+      "teaId": "t_7572",
+      "temp": 100,
+      "vesselId": "",
+      "vesselName": "Yixing pot",
+      "vesselType": "yixing",
+      "water": "Filtered",
+      "id": "s_s1"
+    },
+    {
+      "at": "2026-09-14T15:40:00.000Z",
+      "axes": {
+        "aroma": 3,
+        "bite": 2,
+        "body": 3,
+        "finish": 3,
+        "qi": 4,
+        "sweet": 4
+      },
+      "cat": "sheng",
+      "example": true,
+      "g": 6,
+      "liq": "gold",
+      "ml": 100,
+      "notes": "A bit thin at 6 g.",
+      "rating": 7,
+      "rinse": true,
+      "steeps": [
+        {
+          "liq": "lemon",
+          "note": "",
+          "s": 10,
+          "score": 3,
+          "tags": [
+            "honey"
+          ]
+        },
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 10,
+          "score": 3,
+          "tags": [
+            "camphor"
+          ]
+        },
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 12,
+          "score": 4,
+          "tags": [
+            "orchid"
+          ]
+        },
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 15,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 20,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "lemon",
+          "note": "",
+          "s": 25,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "lemon",
+          "note": "",
+          "s": 35,
+          "score": 2,
+          "tags": []
+        },
+        {
+          "liq": "lemon",
+          "note": "",
+          "s": 50,
+          "score": 2,
+          "tags": []
+        },
+        {
+          "liq": "straw",
+          "note": "",
+          "s": 75,
+          "score": 2,
+          "tags": []
+        },
+        {
+          "liq": "straw",
+          "note": "",
+          "s": 120,
+          "score": 2,
+          "tags": []
+        }
+      ],
+      "style": "gongfu",
+      "tags": [
+        "honey",
+        "camphor",
+        "orchid"
+      ],
+      "tea": "2019 Yiwu Gushu",
+      "teaId": "t_yiwu",
+      "temp": 100,
+      "vesselId": "",
+      "vesselName": "Gaiwan",
+      "vesselType": "gaiwan",
+      "water": "Spring",
+      "id": "s_y1"
+    },
+    {
+      "at": "2026-09-28T19:40:00.000Z",
+      "axes": {
+        "aroma": 4,
+        "bite": 2,
+        "body": 4,
+        "finish": 4,
+        "qi": 5,
+        "sweet": 4
+      },
+      "cat": "sheng",
+      "example": true,
+      "g": 7,
+      "liq": "honey",
+      "ml": 100,
+      "notes": "Soft Yiwu sweetness, starting to show storage depth.",
+      "rating": 8,
+      "rinse": true,
+      "steeps": [
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 8,
+          "score": 4,
+          "tags": [
+            "honey"
+          ]
+        },
+        {
+          "liq": "honey",
+          "note": "",
+          "s": 8,
+          "score": 4,
+          "tags": [
+            "honey",
+            "orchid"
+          ]
+        },
+        {
+          "liq": "honey",
+          "note": "Strong qi",
+          "s": 10,
+          "score": 5,
+          "tags": [
+            "orchid",
+            "stone fruit"
+          ]
+        },
+        {
+          "liq": "honey",
+          "note": "",
+          "s": 10,
+          "score": 4,
+          "tags": [
+            "forest floor"
+          ]
+        },
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 12,
+          "score": 4,
+          "tags": []
+        },
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 15,
+          "score": 4,
+          "tags": []
+        },
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 20,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "gold",
+          "note": "",
+          "s": 25,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "lemon",
+          "note": "",
+          "s": 35,
+          "score": 3,
+          "tags": []
+        },
+        {
+          "liq": "lemon",
+          "note": "",
+          "s": 50,
+          "score": 2,
+          "tags": []
+        },
+        {
+          "liq": "lemon",
+          "note": "",
+          "s": 75,
+          "score": 2,
+          "tags": []
+        }
+      ],
+      "style": "gongfu",
+      "tags": [
+        "honey",
+        "orchid",
+        "stone fruit",
+        "forest floor"
+      ],
+      "tea": "2019 Yiwu Gushu",
+      "teaId": "t_yiwu",
+      "temp": 95,
+      "vesselId": "",
+      "vesselName": "Gaiwan",
+      "vesselType": "gaiwan",
+      "water": "Spring",
+      "id": "s_y2"
+    }
+  ]
+}

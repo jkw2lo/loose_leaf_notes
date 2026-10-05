@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Loose Leaf Notes</title>
+<meta name="description" content="A tea journal for people who take tea seriously: a shelf of your teas, brewing guides, a steep-by-steep timer and a library of teas you've finished.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <button class="brand" data-a="view" data-v="shelf" aria-label="Tea shelf">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="13" rx="12" ry="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 13c0 8 5 14 12 14s12-6 12-14" fill="none" stroke="currentColor" stroke-width="1.6"/><ellipse cx="16" cy="13.4" rx="9.5" ry="2.6" style="fill:var(--accent);opacity:.55"/><path d="M19 4c-4 0-6 3-5 6 3 0 6-2 5-6z" style="fill:var(--accent)"/></svg>
+      <b>Loose Leaf Notes</b>
+    </button>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button role="tab" data-a="view" data-v="shelf" aria-selected="true">Teas</button>
+      <button role="tab" data-a="view" data-v="library" aria-selected="false">Library</button>
+      <button role="tab" data-a="view" data-v="journal" aria-selected="false">Journal</button>
+      <button role="tab" data-a="view" data-v="insights" aria-selected="false">Insights</button>
+      <button role="tab" data-a="view" data-v="guide" aria-selected="false">Guides</button>
+    </nav>
+    <button class="icon-btn" id="gearBtn" data-a="view" data-v="settings" aria-label="Settings" title="Settings" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    <button class="btn primary new-btn" data-a="newSession">＋ Log a session</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="view" id="view-shelf"></section>
+  <section class="view" id="view-tea" hidden></section>
+  <section class="view" id="view-library" hidden></section>
+  <section class="view" id="view-journal" hidden></section>
+  <section class="view" id="view-insights" hidden></section>
+  <section class="view" id="view-guide" hidden></section>
+  <section class="view" id="view-settings" hidden></section>
+</main>
+<button class="btn primary fab" data-a="newSession">＋ Log a session</button>
+<div class="scrim" id="scrim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div></div>
+<div class="toast" id="toast" hidden></div>
+<script src="src/js/data/tea-data.js"></script>
+<script src="src/js/core/util.js"></script>
+<script src="src/js/core/guide.js"></script>
+<script src="src/js/core/store.js"></script>
+<script src="src/js/ui/illustrations.js"></script>
+<script src="src/js/views/shelf.js"></script>
+<script src="src/js/views/tea.js"></script>
+<script src="src/js/views/journal.js"></script>
+<script src="src/js/views/insights.js"></script>
+<script src="src/js/views/guides.js"></script>
+<script src="src/js/views/settings.js"></script>
+<script src="src/js/views/library.js"></script>
+<script src="src/js/views/router.js"></script>
+<script src="src/js/sheets/session-detail.js"></script>
+<script src="src/js/sheets/combobox.js"></script>
+<script src="src/js/sheets/tea-form.js"></script>
+<script src="src/js/sheets/session-form.js"></script>
+<script src="src/js/core/export.js"></script>
+<script src="src/js/events.js"></script>
+<script src="src/js/main.js"></script>
+</body>
+</html>

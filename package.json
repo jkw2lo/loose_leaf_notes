@@ -1,0 +1,15 @@
+{
+  "name": "loose-leaf-notes",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A tea journal: a shelf of your teas, brewing guides, a steep-by-steep timer and a library of teas you've finished.",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs && node scripts/check.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
