@@ -1,3 +1,3 @@
 /* Boot: render the first view, then connect storage. */
-renderView();
+document.body.dataset.view=state.view;renderView();
 store.init();
