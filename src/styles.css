@@ -77,7 +77,7 @@ p{margin:0}
   .tabs button{flex:1;padding:6px 8px}
 }
 main{padding-block:24px 110px}
-.view[hidden]{display:none}
+[hidden]{display:none !important}
 .page-head{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
 .page-head h1{font-size:clamp(26px,4vw,34px)}
 .page-head p{margin-top:4px;color:var(--ink-2)}
@@ -593,7 +593,6 @@ details.more[open] summary h3::after{content:" −"}
 .chip.opt b{font-family:var(--f-body);font-weight:600;margin-right:2px}
 .chip.opt:hover{border-color:var(--accent);color:var(--accent)}
 .adjust{display:grid;gap:12px;padding-top:12px;border-top:1px dashed var(--line)}
-.adjust[hidden]{display:none}
 .scard .now{border-width:1px}
 .scard .guide-line{font-size:12px}
 .scard .guide-line .sched span{font-size:11px}
