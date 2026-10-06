@@ -8,9 +8,13 @@ document.addEventListener('click',async e=>{
    case 'openTea':if(!leaveOK())return;closeSheet();setView('tea',{teaId:v});return;
    case 'teaStyle':state.teaStyle=v;renderTea();return;
    case 'teaSrc':state.teaSrc=v;renderTea();return;
-   case 'shelfFam':state.shelfFam=state.shelfFam===v?'':v;if(state.view!=='shelf')setView('shelf');else renderShelf();return;
-   case 'shelfClear':state.q='';state.shelfFam='';renderShelf();return;
-   case 'jcat':state.jcats.has(v)?state.jcats.delete(v):state.jcats.add(v);renderJournal();return;
+   case 'shelfFam':state.shelfFam=state.shelfFam===v?'':v;state.shelfPage=null;if(state.view!=='shelf')setView('shelf');else renderShelf();return;
+   case 'shelfClear':state.shelfFam='';state.shelfPage=null;renderShelf();return;
+   case 'shelfPick':state.shelfSel=v;state.shelfStyle=null;renderShelf();if(innerWidth<900)$('#homePanel')?.scrollIntoView({block:'start',behavior:'smooth'});return;
+   case 'shelfPage':state.shelfPage=+v;renderShelf();return;
+   case 'shelfTab':state.shelfTab=v;$('#homePanel').innerHTML=shelfPanel(teaById(state.shelfSel));return;
+   case 'shelfStyle':state.shelfStyle=v;$('#homePanel').innerHTML=shelfPanel(teaById(state.shelfSel));return;
+   case 'jcat':if(!v)state.jcats=new Set();else state.jcats.has(v)?state.jcats.delete(v):state.jcats.add(v);renderJournal();return;
    case 'jClear':state.jq='';state.jcats=new Set();state.jmin=0;renderJournal();return;
    case 'xAxis':state.xAxis=v;renderInsights();return;
    case 'newSession':openPicker();return;
@@ -25,7 +29,6 @@ document.addEventListener('click',async e=>{
    case 'delTea':{const n=brewsOf(v).length;if(!arm(el,n?`Delete tea and ${n} session${n>1?'s':''}?`:'Tap again to delete'))return;try{await store.removeTea(v);closeSheet();setView('shelf');toast('Tea deleted')}catch{toast('Could not delete. Try again.')}return}
    case 'clearEx':{if(!arm(el,'Tap again to remove'))return;el.disabled=true;try{for(const b of store.brews.filter(b=>b.example))await store.removeBrew(b.id);for(const t of store.teas.filter(t=>t.example))await store.removeTea(t.id);toast('Examples removed')}catch{toast('Could not remove every example. Try again.')}return}
    case 'export':exportData(v);return;
-   case 'showFinished':state.showFinished=!state.showFinished;state.shelfFam='';renderShelf();return;
    case 'finishTea':openFinish(v);return;
    case 'restockTea':{const t=teaById(v);if(!t)return;const nt={...(store.teas.find(x=>x.id===v)||t)};delete nt.finished;if(nt.stock)nt.stock={...nt.stock,since:new Date().toISOString()};try{await store.saveTea(nt);toast('Back on your shelf. Update the amount in Edit tea if it changed.');setView('tea',{teaId:v})}catch{toast('Could not save. Try again.')}return}
    case 'finScore':FIN.score=FIN.score===+v?0:+v;$('#fin-score').innerHTML=finScoreHTML();return;
@@ -60,7 +63,6 @@ $('#scrim').addEventListener('mousedown',e=>{if(e.target.id==='scrim'&&['session
 document.addEventListener('input',e=>{
   const t=e.target;
   if(t.dataset.combo){if(TF&&t.dataset.combo!=='type'){TF[t.dataset.combo]=t.value;const n=$('#tf-'+t.dataset.combo+'-note');if(n)n.innerHTML=validNote(t.dataset.combo,t.value)}renderCombo(t);return}
-  if(t.id==='shelfQ'){state.q=t.value;clearTimeout(renderShelf._t);renderShelf._t=setTimeout(renderShelf,120);return}
   if(t.id==='jq'){state.jq=t.value;clearTimeout(renderJournal._t);renderJournal._t=setTimeout(renderJournal,120);return}
   if(t.id==='pickQ'){renderPickList();return}
   if(t.id==='libQ'){state.libQ=t.value;clearTimeout(renderLibrary._t);renderLibrary._t=setTimeout(renderLibrary,120);return}
@@ -89,6 +91,7 @@ document.addEventListener('keydown',e=>{
     if(e.key==='Enter'){e.preventDefault();if(items.length&&(comboIdx>=0||t.dataset.combo==='type'))items[Math.max(0,comboIdx)].click();else hideCombos();return}}
   if(t.dataset?.st==='ctag'&&e.key==='Enter'){e.preventDefault();addStepTag(+t.dataset.i);return}
   if(t.dataset?.ge!=null&&e.key==='Enter'){e.preventDefault();t.blur();return}
+  if(t.tagName==='TR'&&t.dataset.a&&(e.key==='Enter'||e.key===' ')){e.preventDefault();t.click();return}
   if(t.closest?.('#view-brew,#teaForm')&&e.key==='Enter'&&t.tagName==='INPUT'){e.preventDefault();t.blur()}
 });
 document.addEventListener('focusout',e=>{if(e.target.dataset?.combo)setTimeout(()=>{const box=$('#'+e.target.id+'-list');if(box&&!box.contains(document.activeElement))box.hidden=true},180)});

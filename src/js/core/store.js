@@ -1,5 +1,5 @@
 /* ═════════ State & storage ═════════ */
-const state = {libQ:'',libFam:'',libRebuy:'',libSort:'recent',showFinished:false,gq:'',gSel:null,gStyle:null,view:'shelf',teaId:null,teaStyle:null,teaSrc:'typical',q:'',jq:'',jcats:new Set(),jmin:0,shelfFam:'',xAxis:'temp'};
+const state = {libQ:'',libFam:'',libRebuy:'',libSort:'recent',shelfSel:null,shelfPage:null,shelfTab:'stats',shelfStyle:null,gq:'',gSel:null,gStyle:null,view:'shelf',teaId:null,teaStyle:null,teaSrc:'typical',jq:'',jcats:new Set(),jmin:0,shelfFam:'',xAxis:'temp'};
 function normBrew(raw){const b={...raw};b.teaId=b.teaId||('v_'+(norm(b.tea)||'untitled'));b.steeps=(b.steeps||[]).map(s=>typeof s==='number'?{s}:{...s,tags:s.tags||[]});b.axes=b.axes||{};b.tags=b.tags||[];return b}
 const normTea = t=>({...t,fam:FAM[t.fam]?t.fam:(t.cat==='cat'||!t.cat?'other':FAM[t.cat]?t.cat:'other')});
 const store = {

@@ -10,7 +10,7 @@ function stockHTML(t,compact){const k=stockOf(t);if(!k)return '';const pct=clamp
   return `<span class="stock${k.left<=0?' out':pct<20?' low':''}" title="${k.used} g of ${k.total} g used"><span class="stock-bar"><i style="width:${pct}%"></i></span>${k.left<=0?'Used up':`${k.left} g left`}${!compact&&k.sessionsLeft!=null&&k.left>0?` · about ${k.sessionsLeft} session${k.sessionsLeft===1?'':'s'}`:''}</span>`}
 function parsePrice(str){str=String(str||'').trim();if(!str)return null;const n=parseFloat(str.replace(/[^\d.]/g,''));if(isNaN(n))return null;return {price:n,cur:str.replace(/[\d.,\s]/g,'').slice(0,3)}}
 
-/* ═════════ Library: finished teas ═════════ */
+/* ═════════ Library: every tea, in rotation first, then finished ═════════ */
 const REBUY = {yes:'Would buy again',maybe:'Maybe again',no:'Wouldn’t rebuy'};
 function teaSummary(t){
   const bs=brewsOf(t.id).sort((a,b)=>dt(a.at)-dt(b.at));const rated=bs.filter(b=>b.rating);const best=rated.slice().sort((a,b)=>b.rating-a.rating||dt(b.at)-dt(a.at))[0];
@@ -18,24 +18,33 @@ function teaSummary(t){
   return {bs,best,avg:rated.length?avg(rated.map(b=>b.rating)):null,first:bs[0]?.at,last:bs[bs.length-1]?.at,grams:r1(bs.reduce((a,b)=>a+(+b.g||0),0)),tags,score:t.verdict?.score||(best?Math.round(avg(rated.map(b=>b.rating))):null)};
 }
 const monthYear = iso=>iso?dt(iso).toLocaleDateString(undefined,{month:'short',year:'numeric'}):'';
+/* the narrow metrics column beside Library and Journal */
+const rail = items=>`<aside class="rail" aria-label="Metrics">${items.filter(Boolean).map(([v,l])=>`<div class="rail-stat"><b>${v}</b><span>${l}</span></div>`).join('')}</aside>`;
+function spentStr(teas){const by={};teas.forEach(t=>{const k=stockOf(t);if(k?.price)by[k.cur]=(by[k.cur]||0)+k.price});const e=Object.entries(by);return e.length?e.map(([c,n])=>money(n,c)).join(' + '):null}
 function renderLibrary(){
   const el=$('#view-library');if(store.mode==='pending'){el.innerHTML='<p class="loading">Opening your notes…</p>';return}
-  const all=allTeas().filter(t=>t.finished);const q=norm(state.libQ);
+  const all=allTeas();const q=norm(state.libQ);
   const focused=document.activeElement?.id==='libQ';const caret=focused?document.activeElement.selectionStart:0;
-  let list=all.map(t=>({t,s:teaSummary(t)})).filter(({t})=>(!q||norm([t.name,t.brand,t.origin,t.harvest,typeOf(t)?.name,famOf(t.fam).name,t.verdict?.note].join(' ')).includes(q))&&(!state.libFam||t.fam===state.libFam)&&(!state.libRebuy||t.verdict?.rebuy===state.libRebuy));
-  const sorts={recent:(a,b)=>dt(b.t.finished)-dt(a.t.finished),rating:(a,b)=>(b.s.score||0)-(a.s.score||0),sessions:(a,b)=>b.s.bs.length-a.s.bs.length,name:(a,b)=>a.t.name.localeCompare(b.t.name)};
+  const list=all.map(t=>({t,s:teaSummary(t)})).filter(({t})=>(!q||norm([t.name,t.brand,t.origin,t.harvest,typeOf(t)?.name,famOf(t.fam).name,t.verdict?.note].join(' ')).includes(q))&&(!state.libFam||t.fam===state.libFam)&&(!state.libRebuy||t.verdict?.rebuy===state.libRebuy));
+  const when=x=>x.t.finished?+dt(x.t.finished):lastBrewAt(x.t);
+  const sorts={recent:(a,b)=>when(b)-when(a),rating:(a,b)=>(b.s.score||0)-(a.s.score||0),sessions:(a,b)=>b.s.bs.length-a.s.bs.length,name:(a,b)=>a.t.name.localeCompare(b.t.name)};
   list.sort(sorts[state.libSort]||sorts.recent);
+  const rot=list.filter(x=>!x.t.finished),fin=list.filter(x=>x.t.finished);
   const counts={};all.forEach(t=>counts[t.fam]=(counts[t.fam]||0)+1);
-  const sessions=all.reduce((a,t)=>a+brewsOf(t.id).length,0),grams=all.reduce((a,t)=>a+brewsOf(t.id).reduce((x,b)=>x+(+b.g||0),0),0);
-  const fav=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];const rebuyN=all.filter(t=>t.verdict?.rebuy==='yes').length;
-  el.innerHTML=`<div class="page-head"><div><h1>Library</h1><p>Teas you have finished, with every session and note kept.</p></div></div>
-  ${!all.length?`<div class="empty"><h2>Your library is empty</h2><p>When you finish a tea, mark it as finished from its page. It moves here with its sessions, recipes and your final verdict, ready to look back on or buy again.</p><button class="btn" data-a="view" data-v="shelf">Go to the shelf</button></div>`:`
-  <div class="stats lib-stats"><div class="stat"><b>${all.length}</b><span>teas finished</span></div><div class="stat"><b>${sessions}</b><span>sessions with them</span></div><div class="stat"><b>${Math.round(grams)}<span style="font-size:16px"> g</span></b><span>leaf brewed</span></div><div class="stat"><b>${rebuyN}</b><span>you’d buy again</span></div></div>
-  <div class="tool-row" style="margin:16px 0 10px"><label class="search">${searchIcon}<input id="libQ" type="search" placeholder="Search name, brand, origin, verdict" value="${esc(state.libQ)}" aria-label="Search library"></label>
-   <select class="pill" id="libRebuy" aria-label="Would buy again"><option value="">Any verdict</option>${Object.entries(REBUY).map(([k,v])=>`<option value="${k}" ${state.libRebuy===k?'selected':''}>${v}</option>`).join('')}</select>
-   <select class="pill" id="libSort" aria-label="Sort"><option value="recent">Recently finished</option><option value="rating" ${state.libSort==='rating'?'selected':''}>Highest rated</option><option value="sessions" ${state.libSort==='sessions'?'selected':''}>Most brewed</option><option value="name" ${state.libSort==='name'?'selected':''}>Name A–Z</option></select></div>
-  <div class="chips" style="margin-bottom:18px">${FAMS.filter(c=>counts[c.id]).map(c=>`<button class="chip" data-a="libFam" data-v="${c.id}" aria-pressed="${state.libFam===c.id}" style="--c:${liqHex(midLiq(c.liqs))}"><span class="dot"></span>${c.name}<span class="n">${counts[c.id]}</span></button>`).join('')}</div>
-  ${list.length?`<div class="libgrid">${list.map(libCard).join('')}</div>`:`<div class="empty"><h2>Nothing matches</h2><button class="btn" data-a="libClear">Clear filters</button></div>`}`}`;
+  const nFin=all.filter(t=>t.finished).length,grams=store.brews.reduce((a,b)=>a+(+b.g||0),0),rebuyN=all.filter(t=>t.verdict?.rebuy==='yes').length,spent=spentStr(all);
+  const rated=all.map(t=>teaSummary(t).score).filter(Boolean);
+  const sec=(title,items,note)=>items.length?`<section class="lib-sec"><div class="lib-sec-head"><h2>${title}</h2><span class="count">${items.length}</span>${note?`<span class="muted">${note}</span>`:''}</div><div class="libgrid">${items.map(libCard).join('')}</div></section>`:'';
+  el.innerHTML=`<div class="page-head"><div><h1>Library</h1><p>Every tea you have kept notes on: the ones in rotation, then the ones you have finished.</p></div></div>
+  ${!all.length?`<div class="empty"><h2>Your library is empty</h2><p>Teas you add appear here, and stay with their sessions and verdict after you finish them.</p><button class="btn primary" data-a="newTea">＋ Add a tea</button></div>`:`
+  ${famChips(counts,id=>state.libFam===id,'libFam',!state.libFam)}
+  <div class="with-rail"><div class="rail-main">
+   <div class="tool-row lib-tools"><label class="search">${searchIcon}<input id="libQ" type="search" placeholder="Search name, brand, origin, verdict" value="${esc(state.libQ)}" aria-label="Search library"></label>
+    <select class="pill" id="libRebuy" aria-label="Would buy again"><option value="">Any verdict</option>${Object.entries(REBUY).map(([k,v])=>`<option value="${k}" ${state.libRebuy===k?'selected':''}>${v}</option>`).join('')}</select>
+    <select class="pill" id="libSort" aria-label="Sort"><option value="recent">Most recent</option><option value="rating" ${state.libSort==='rating'?'selected':''}>Highest rated</option><option value="sessions" ${state.libSort==='sessions'?'selected':''}>Most brewed</option><option value="name" ${state.libSort==='name'?'selected':''}>Name A–Z</option></select></div>
+   ${list.length?sec('In rotation',rot)+sec('Finished',fin):`<div class="empty"><h2>Nothing matches</h2><button class="btn" data-a="libClear">Clear filters</button></div>`}
+  </div>
+  ${rail([[all.length,'teas in all'],[all.length-nFin,'in rotation'],[nFin,'finished'],[store.brews.length,'sessions'],[Math.round(grams)+'<small> g</small>','leaf brewed'],spent&&[spent,'spent on tea'],rated.length&&[avg(rated).toFixed(1),'average rating'],nFin&&[rebuyN,'you’d buy again']])}
+  </div>`}`;
   if(focused){const i=$('#libQ');i.focus();try{i.setSelectionRange(caret,caret)}catch{}}
 }
 function libCard({t,s}){
@@ -44,7 +53,7 @@ function libCard({t,s}){
    <span class="lib-body">
     <span class="lib-top" style="--wash:${washOf(band)}"><span class="cup" style="--liq:${liqHex(teaLiq(t))}"></span><span class="lib-title"><span class="tc-name">${esc(t.name)}</span><span class="meta">${[T&&norm(T.name)!==norm(t.name)?T.name:null,t.brand].filter(Boolean).map(esc).join(' · ')||esc(famOf(t.fam).name)}</span></span>${s.score?`<span class="score">${s.score}<small>/10</small></span>`:''}</span>
     <span class="lib-meta">${[t.origin,t.harvest].filter(Boolean).map(esc).join(' · ')}</span>
-    <span class="lib-dates mono">${s.first?monthYear(s.first)+' – ':''}${monthYear(t.finished)}</span>
+    <span class="lib-dates mono">${t.finished?`${s.first?monthYear(s.first)+' – ':''}${monthYear(t.finished)}`:`In rotation${s.first?' since '+monthYear(s.first):''}`}</span>${t.finished?'':stockHTML(t,true)}
     <span class="lib-stats"><span><b>${s.bs.length}</b> sessions</span><span><b>${s.grams}</b> g</span>${s.avg?`<span>avg <b>${s.avg.toFixed(1)}</b></span>`:''}${k?.perG?`<span><b>${money(k.perG*(s.bs.length?s.grams/s.bs.length:0),k.cur)}</b>/session</span>`:''}</span>
     ${s.best?`<span class="recipe mono">Best: ${esc(paramLine(s.best))}</span>`:''}
     ${s.tags.length?`<span class="tags">${s.tags.map(x=>`<span class="tg">${esc(x)}</span>`).join('')}</span>`:''}
