@@ -176,12 +176,18 @@ function rSide(){const el=$('#bw-guide');const t=sTea();const typ=sRec(),pr=sPro
   const tabs=`<div class="seg sidetabs" role="tablist" aria-label="Tea information"><button type="button" role="tab" data-a="sideTab" data-v="guide" aria-pressed="${S.side==='guide'}" aria-selected="${S.side==='guide'}">Brew guide</button><button type="button" role="tab" data-a="sideTab" data-v="about" aria-pressed="${S.side==='about'}" aria-selected="${S.side==='about'}">About this tea</button></div>`;
   if(S.side==='about'){el.innerHTML=tabs+teaDetailsHTML(t);return}
   const tips=[...(src==='producer'&&pr.pnotes?[pr.pnotes]:[]),...(typ.tips||[])];
+  const pg=S.gpage||0;
   el.innerHTML=`${tabs}
    <div class="bw-guide-head"><span class="eyebrow">${esc(STYLE[S.style]||S.style)} · ${src==='producer'?esc(t.brand||'Producer')+'’s recipe':typ.edited?'your guide':'typical guide'}</span>${pr?`<div class="seg sm" role="group" aria-label="Guide source"><button type="button" data-a="gSrc" data-v="typical" aria-pressed="${src==='typical'}">Typical</button><button type="button" data-a="gSrc" data-v="producer" aria-pressed="${src==='producer'}">Producer</button></div>`:''}</div>
-   ${guideList(r)}
-   <ol class="bw-steps">${stepsFor(r).map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
-   ${tips.length?`<div class="bw-tips">${tips.map(x=>`<p>${esc(x)}</p>`).join('')}</div>`:''}
-   <button type="button" class="btn sm" data-a="${src==='producer'?'useProd':'useSugg'}">Use these settings</button>`}
+   <div class="gp" id="gp">
+    <section class="gp-page" aria-label="Instructions"><ol class="bw-steps">${stepsFor(r).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></section>
+    <section class="gp-page" aria-label="Details">${guideList(r)}${tips.length?`<div class="bw-tips">${tips.map(x=>`<p>${esc(x)}</p>`).join('')}</div>`:''}<button type="button" class="btn sm" data-a="${src==='producer'?'useProd':'useSugg'}">Use these settings</button></section>
+   </div>
+   <div class="gp-nav" role="group" aria-label="Guide pages"><button type="button" data-a="gPage" data-v="0" aria-pressed="${pg===0}">Instructions</button><span class="gp-dots" aria-hidden="true"><i class="${pg===0?'on':''}"></i><i class="${pg===1?'on':''}"></i></span><button type="button" data-a="gPage" data-v="1" aria-pressed="${pg===1}">Details ›</button></div>`;
+  const gp=$('#gp');gp.scrollLeft=pg*gp.clientWidth;gpFit();
+  gp.addEventListener('scroll',()=>{clearTimeout(gp._t);gp._t=setTimeout(()=>{S.gpage=Math.round(gp.scrollLeft/gp.clientWidth);gpNav()},120)},{passive:true})}
+function gpFit(){const gp=$('#gp');const pg=gp?.children[S.gpage||0];if(pg)gp.style.height=pg.offsetHeight+'px'}
+function gpNav(fit=true){const p=S.gpage||0;if(fit)gpFit();$$('.gp-nav button').forEach((b,i)=>b.setAttribute('aria-pressed',i===p));$$('.gp-dots i').forEach((d,i)=>d.classList.toggle('on',i===p))}
 
 function guideList(r){const own=new Set(store.settings.vessels.map(v=>v.type));const u=r.style==='ice'?'g':'ml';
   const rows=[['Teaware',r.vessels.map(v=>VT[v].name+(own.has(v)?' ✓':'')).join(', ')],
@@ -203,15 +209,15 @@ function tStart(){if(T.run)return;T.run=true;T.t0=performance.now();
 function tPause(){if(!T.run)return;T.acc=tElapsed();T.run=false;clearInterval(T.iv);try{T.lock?.release()}catch{}T.lock=null}
 function tStopLog(){if(!T.run)return;tPause();const s=Math.max(1,Math.round(T.acc));T.acc=s;T.done=true;const b=S.steeps[T.brew];
   if(b){b.s=s;if(S.cur===T.brew)rBrews();else rTabTime(T.brew)}rCompare();rTimer();toast(`Brew ${T.brew+1}: ${fmtS(s)} logged`)}
-function rTimer(){const el=$('#bw-timer');if(!el||!S)return;const C=2*Math.PI*62;const e=tElapsed();const over=T.run&&e>=T.target;const idle=!T.run&&!T.done;
+function rTimer(){const el=$('#bw-timer');if(!el||!S)return;const e=tElapsed();const over=T.run&&e>=T.target;
   el.className='bw-timer'+(T.run?' running':'')+(over?' over':'')+(T.done?' done':'');
-  el.innerHTML=`<svg class="ring" viewBox="0 0 150 150" role="timer" aria-label="Steep timer"><circle class="rt" cx="75" cy="75" r="62"/><circle class="rp" id="ringP" cx="75" cy="75" r="62" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-clamp(e/(T.target||1),0,1))}" transform="rotate(-90 75 75)"/>
-    <text class="rbig" id="ringT" x="75" y="80" text-anchor="middle">${T.done?fmtClock(e):over?'+'+fmtClock(e-T.target):fmtClock(Math.ceil(T.target-e))}</text><text class="rsub" id="ringS" x="75" y="102" text-anchor="middle">${T.done?'brew '+(T.brew+1)+' logged':T.run?(over?'pour now':'steeping'):'brew '+(T.brew+1)}</text></svg>
+  el.innerHTML=`<div class="tm-read" role="timer" aria-label="Steep timer"><span class="tm-time" id="ringT">${T.done?fmtClock(e):over?'+'+fmtClock(e-T.target):fmtClock(Math.ceil(T.target-e))}</span><span class="tm-sub" id="ringS">${T.done?'brew '+(T.brew+1)+' logged':T.run?(over?'pour now':'steeping'):'brew '+(T.brew+1)}</span></div>
+   <span class="tm-bar" aria-hidden="true"><i id="ringP" style="width:${clamp(e/(T.target||1),0,1)*100}%"></i></span>
    <div class="tm-ctrl">${T.run?`<button type="button" class="btn primary" data-a="tStop" title="End this steep and log the time">■ Stop</button><button type="button" class="btn ghost" data-a="tReset" title="Stop without logging">Cancel</button>`
     :T.done?`<button type="button" class="btn primary" data-a="brewNext">＋ Next brew</button><button type="button" class="btn ghost" data-a="tReset">Redo</button>`
     :`<button type="button" class="btn primary" data-a="tStart">▶ Start</button>`}</div>`}
-function tTick(){if(!T.run)return;const e=tElapsed();const C=2*Math.PI*62;const p=$('#ringP'),tt=$('#ringT'),ss=$('#ringS');if(!p){return}
-  const rem=T.target-e;p.setAttribute('stroke-dashoffset',C*(1-clamp(e/T.target,0,1)));
+function tTick(){if(!T.run)return;const e=tElapsed();const p=$('#ringP'),tt=$('#ringT'),ss=$('#ringS');if(!p){return}
+  const rem=T.target-e;p.style.width=clamp(e/T.target,0,1)*100+'%';
   if(rem>0){tt.textContent=fmtClock(Math.ceil(rem));ss.textContent='steeping'}else{tt.textContent='+'+fmtClock(-rem);ss.textContent='pour now'}
   if(!T.chimed&&e>=T.target){T.chimed=true;chime();rTimer()}}
 function chime(){try{const c=T.ctx;if(!c)return;[0,.22,.44].forEach((d,i)=>{const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=i===2?1046:784;o.connect(g);g.connect(c.destination);const t=c.currentTime+d;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.4);o.start(t);o.stop(t+.45)})}catch{}try{navigator.vibrate?.([120,80,120])}catch{}}
@@ -266,6 +272,8 @@ function brewAction(a,v,el){
    case 'sRate':S.rating=S.rating===+v?0:+v;rOverall();rCompare();return true;
    case 'sideTab':S.side=v;rSide();return true;
    case 'gSrc':S.gsrc=v;rSide();return true;
+   case 'gPage':{S.gpage=+v;const gp=$('#gp');if(!gp)return true;const x=S.gpage*gp.clientWidth;gp.scrollTo({left:x,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});gpNav(false);
+     setTimeout(()=>{if(Math.abs(gp.scrollLeft-x)>2)gp.scrollLeft=x;gpFit()},450);return true}
    case 'useSugg':applyRecipe(sRec());return true;
    case 'useProd':applyRecipe(sProd());return true;
    case 'useBrew':useBrew(v);return true;
@@ -285,6 +293,34 @@ async function saveSession(){
     steeps,rating:S.rating||0,axes:avgAxes(steeps),notes:S.notes||'',water:S.water||'',liq:steeps[0]?.liq||'',tags:[...new Set(steeps.flatMap(s=>s.tags))],id:S.id};
   if(S.editing&&S.example)b.example=true;
   const btn=$('[data-a="saveSession"]');btn.disabled=true;const label=btn.innerHTML;btn.textContent='Saving…';
-  try{await store.saveBrew(b);const wasEdit=S.editing;S.snap=brewSnap();tReset();toast(wasEdit?'Changes saved':'Session added to your log');const f=S.from||{};f.view&&f.view!=='brew'?setView(f.view,{teaId:f.teaId||t.id}):setView('tea',{teaId:t.id})}
-  catch(e){btn.disabled=false;btn.innerHTML=label;toast(e?.code==='quota_exceeded'?'Storage is full. Delete some old sessions to make room.':'Could not save. Check your connection and try again.')}
+  const ov=pourOverlay(t,b);const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  try{await Promise.all([store.saveBrew(b),new Promise(r=>setTimeout(r,still?600:2600))]);
+    S.snap=brewSnap();tReset();ov.classList.add('done');ov.querySelector('.po-sub').textContent=ov.dataset.done;
+    await new Promise(r=>{const go=()=>{clearTimeout(k);r()};const k=setTimeout(go,still?1200:1500);ov.addEventListener('click',go,{once:true})});
+    ov.remove();const f=S.from||{};f.view&&f.view!=='brew'?setView(f.view,{teaId:f.teaId||t.id}):setView('tea',{teaId:t.id})}
+  catch(e){ov.remove();btn.disabled=false;btn.innerHTML=label;toast(e?.code==='quota_exceeded'?'Storage is full. Delete some old sessions to make room.':'Could not save. Check your connection and try again.')}
 }
+const POUR_LINES=['Steeped, sipped and saved.','Another cup for the notebook.','The leaves thank you.','Noted, down to the last drop.','A fine session, well kept.'];
+function pourOverlay(t,b){const n=b.steeps.length;const liq=liqHex(b.steeps.find(s=>s.liq)?.liq||midLiq(liqsOf(t)));
+  const ov=document.createElement('div');ov.className='pour';ov.setAttribute('role','status');ov.setAttribute('aria-live','polite');ov.style.setProperty('--liq',liq);
+  ov.dataset.done=`${n} brew${n===1?'':'s'} of ${t.name}${b.rating?`, rated ${b.rating}/10`:''}.`;
+  ov.innerHTML=`<div class="po-card">
+   <svg class="po-art" viewBox="0 0 240 170" aria-hidden="true">
+    <ellipse class="po-saucer" cx="152" cy="155" rx="36" ry="4.5"/>
+    <path class="po-stream" d="M128 88 Q140 96 147 132" pathLength="100"/>
+    <path class="po-cup-bg" d="M128 110 L132 146 Q134 152 140 152 L164 152 Q170 152 172 146 L176 110 Z"/>
+    <clipPath id="poCup"><path d="M128 110 L132 146 Q134 152 140 152 L164 152 Q170 152 172 146 L176 110 Z"/></clipPath>
+    <g clip-path="url(#poCup)"><rect class="po-fill" x="126" y="110" width="52" height="44"/></g>
+    <path class="po-cup" d="M128 110 L132 146 Q134 152 140 152 L164 152 Q170 152 172 146 L176 110 Z"/>
+    <path class="po-cup-h" d="M175 118 C190 118 190 138 172 138"/>
+    <path class="po-steam s1" d="M146 104 q-5 -8 0 -16 q5 -8 0 -16"/><path class="po-steam s2" d="M158 104 q-5 -8 0 -16 q5 -8 0 -16"/>
+    <g class="po-pot">
+     <path class="po-pot-h" d="M38 58 C16 58 16 88 42 86"/>
+     <path class="po-pot-b" d="M100 70 L124 50 L128 52 L106 82 Z"/>
+     <ellipse class="po-pot-b" cx="70" cy="70" rx="34" ry="26"/>
+     <path class="po-pot-l" d="M48 48 Q70 34 92 48 Z"/><circle class="po-pot-l" cx="70" cy="38" r="4"/>
+    </g>
+   </svg>
+   <h2 class="po-title"><span class="po-t1">Logging away this tea session…</span><span class="po-t2">${esc(POUR_LINES[Math.floor(Math.random()*POUR_LINES.length)])}</span></h2>
+   <p class="po-sub">${esc(t.name)} · ${n} brew${n===1?'':'s'}</p></div>`;
+  document.body.appendChild(ov);return ov}
