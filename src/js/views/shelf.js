@@ -28,7 +28,7 @@ function teaCard(t){
   const bs=brewsOf(t.id).sort((a,b)=>dt(b.at)-dt(a.at));const rated=bs.filter(b=>b.rating);const best=rated.slice().sort((a,b)=>b.rating-a.rating)[0];
   const T=typeOf(t);const sub=[T&&norm(T.name)!==norm(t.name)?T.name:null,t.brand].filter(Boolean).map(esc).join(' · ');
   return `<article class="tea-card" style="--wash:${washOf(liqsOf(t))}">
-   <button class="tc-top" data-a="openTea" data-v="${esc(t.id)}">
+   <button class="tc-top" data-a="logFor" data-v="${esc(t.id)}">
     <span class="cup" style="--liq:${liqHex(teaLiq(t))}"></span>
     <span class="tc-title"><span class="tc-name">${esc(t.name)}</span><span class="meta">${sub||esc(t.origin||famOf(t.fam).name)}</span>${t.example?'<span class="tg ex">Example</span>':''}</span>
     ${best?`<span class="tc-score" title="Best session">${best.rating}</span>`:''}
