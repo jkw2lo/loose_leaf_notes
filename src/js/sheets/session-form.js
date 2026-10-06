@@ -33,7 +33,7 @@ function sProd(){return prodFor(sTea(),S.style)}
 function pickDefaultVessel(){const rec=sRec();const own=store.settings.vessels;const v=own.find(x=>rec.vessels.includes(x.type))||own[0];if(!v)return;S.vesselId=v.id;S.vesselType=v.type;S.vesselName=v.name}
 function nextTarget(n=S.steeps.length){const rec=sProd()||sRec();if(rec.sched[n]!=null){const last=S.steeps[n-1];if(last&&rec.sched[n-1]){const k=clamp(last.s/rec.sched[n-1],.6,1.6);return Math.round(rec.sched[n]*(k>1.15||k<.85?k:1))}return rec.sched[n]}const last=S.steeps[n-1]?.s||rec.sched[rec.sched.length-1]||30;return Math.round(last*1.35)}
 function newBrew(base){const rec=sProd()||sRec();const prev=S.steeps[S.steeps.length-1];const src=base||prev;
-  return {s:nextTarget(),temp:noTemp(S.style)?null:(src?.temp??rec.target),ml:src?.ml??rec.ml,liq:prev?.liq||'',score:0,tags:[],note:'',axes:blankAxes()}}
+  return {s:nextTarget(),temp:noTemp(S.style)?null:(src?.temp??rec.target),ml:src?.ml??rec.ml,liq:'',score:0,tags:[],note:'',axes:blankAxes()}}
 const curBrew = ()=>S.steeps[S.cur];
 const tStep = s=>s<20?1:s<60?5:s<600?15:s<3600?60:1800;
 
@@ -52,19 +52,19 @@ function renderBrew(){
   const Ty=typeOf(t);
   el.innerHTML=`<div class="bw">
    <div class="bw-main">
-    <div class="bw-head"><button class="back" data-a="brewBack">← Back to ${S.from?.view==='tea'?esc(t.name):({shelf:'tea shelf',library:'library',journal:'journal',insights:'insights',guide:'guides',settings:'settings'}[S.from?.view]||'tea shelf')}</button>
+    <div class="bw-headrow"><div class="bw-head"><button class="back" data-a="brewBack">← Back to ${S.from?.view==='tea'?esc(t.name):({shelf:'tea shelf',library:'library',journal:'journal',insights:'insights',guide:'guides',settings:'settings'}[S.from?.view]||'tea shelf')}</button>
      <h1>${esc(t.name)}${t.brand?`<span class="bw-brand"> – ${esc(t.brand)}</span>`:''}</h1>
      <div class="bw-sub"><span class="eyebrow">${esc(famOf(t.fam).name)}${Ty&&norm(Ty.name)!==norm(t.name)?' | '+esc(Ty.name):''}${S.editing?' · editing session':''}</span>${S.from?.view==='tea'?'':`<button type="button" class="linkbtn" data-a="openTea" data-v="${esc(t.id)}">Tea page &amp; all sessions</button>`}</div></div>
+     <div class="bw-timer" id="bw-timer"></div></div>
     <section class="bw-params" aria-label="Today's brew parameters">
      <div class="bw-top" id="bw-top"></div>
      <div class="bw-brews" id="bw-brews"></div>
      <div class="bw-overall" id="bw-overall"></div>
     </section>
-    <section class="bw-compare" id="bw-compare" aria-label="Compared with earlier sessions"></section>
    </div>
    <aside class="bw-side">
     <div class="bw-guide" id="bw-guide"></div>
-    <div class="bw-timer" id="bw-timer"></div>
+    <section class="bw-compare" id="bw-compare" aria-label="Compared with earlier sessions"></section>
    </aside></div>`;
   rTop();rBrews();rOverall();rCompare();rSide();rTimer();
 }
@@ -74,14 +74,14 @@ function cycler(key,label,val,sub,{input}={}){
    <span class="cyc-val">${input||`<b>${val}</b>`}${sub?`<small>${sub}</small>`:''}</span>
    <button type="button" class="cyc-btn" data-a="cyc" data-v="${key}:1" aria-label="Next ${label.toLowerCase()}">›</button></div></div>`}
 function rTop(){
-  const rec=sRec(),v=vesselOf(S),ms=methodsFor(sTea()).map(m=>m.style);const ml=S.steeps[0]?.ml||rec.ml;
-  const plus='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+  const v=vesselOf(S),ms=methodsFor(sTea()).map(m=>m.style);
   $('#bw-top').innerHTML=
    (ms.length>1||!ms.includes(S.style)?cycler('style','Method',esc(STYLE[S.style]||S.style),'',{}):'')+
    cycler('vessel','Vessel',esc(v.name),v.ml?v.ml+' ml':'')+
-   cycler('leaf','Leaf','',`guide ${r1(rec.per[0]*ml/100)}–${r1(rec.per[1]*ml/100)} g`,{input:`<span class="cyc-in"><input id="bw-g" inputmode="decimal" value="${S.g}" aria-label="Leaf in grams"><b>g</b></span>`})+
-   `<button type="button" class="btn primary fabext" data-a="saveSession">${plus}${S.editing?'Save changes':'Add to log'}</button>`;
+   cycler('leaf','Leaf','','',{input:`<span class="cyc-in"><input id="bw-g" inputmode="decimal" value="${S.g}" style="width:${gW()}" aria-label="Leaf in grams"><b>g</b></span>`})+
+   `<label class="bw-at"><span class="lbl">Brewed</span><input class="input" type="date" id="bw-at" value="${toLocalInput(S.at).slice(0,10)}"></label>`;
 }
+const gW = ()=>Math.max(1.5,String(S.g).length+.3)+'ch';
 function rBrews(){
   const b=curBrew(),rec=sProd()||sRec(),i=S.cur;
   const tabs=S.steeps.map((x,k)=>`<button type="button" role="tab" id="bt-${k}" aria-selected="${k===i}" aria-controls="bw-panel" data-a="bwTab" data-v="${k}"><span class="ldot" style="--liq:${x.liq?liqHex(x.liq):'var(--surface-2)'}"></span>Brew ${k+1}<small id="btt-${k}">${fmtS(x.s)}</small></button>`).join('');
@@ -93,24 +93,49 @@ function rBrews(){
    <div class="bp" id="bw-panel" role="tabpanel" aria-labelledby="bt-${i}">
     <div class="bp-left">
      ${temp}
-     ${slider('s','Time',0,tv.length-1,1,nearIdx(tv,b.s),fmtS(b.s),`<button type="button" class="to-timer" data-a="toTimer" aria-label="Send this time to the timer" title="Send to timer"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>`)}
+     ${slider('s','Time',0,tv.length-1,1,nearIdx(tv,b.s),fmtS(b.s))}
      ${slider('ml','Vol',20,volMax(),volStep(),b.ml,b.ml+' '+volU())}
      <div class="sl-guide muted" id="bw-sl-guide"></div>
-     <div class="field"><span class="lbl">Liquor</span><div class="liq-typ">${rec.liqs.map(id=>`<button type="button" class="sw s" style="--c:${liqHex(id)}" data-a="stLiq" data-v="${i}" data-liq="${id}" aria-pressed="${b.liq===id}" title="${LIQM[id].n}" aria-label="${LIQM[id].n}"></button>`).join('')}<span class="liq-name">${b.liq?LIQM[b.liq].n:''}</span></div></div>
+     ${liqGrad()}
      <textarea class="textarea" id="bs-note" data-bs="note" rows="3" placeholder="Brew comments: what changed in this cup?" aria-label="Brew ${i+1} comments">${esc(b.note||'')}</textarea>
      ${S.steeps.length>1?`<button type="button" class="linkbtn danger-link bp-rm" data-a="brewRm">Remove brew ${i+1}</button>`:''}
     </div>
     <div class="bp-pal">
      <div class="bp-pal-head"><h3>Palate profile</h3><div class="cupscore" aria-label="Score for this cup">${[1,2,3,4,5].map(n=>`<button type="button" data-a="stScore" data-v="${i}:${n}" class="${b.score===n?'sel':b.score>n?'on':''}" aria-label="${n} of 5" aria-pressed="${b.score===n}">${n}</button>`).join('')}</div></div>
-     <div class="bp-pal-grid"><div class="axes">${AXES.map(([k,lab])=>`<label class="axis" for="ax-${k}"><span>${lab}</span><input type="range" id="ax-${k}" data-axis="${k}" min="0" max="5" step="1" value="${b.axes?.[k]||0}"><output id="axo-${k}">${b.axes?.[k]||'–'}</output></label>`).join('')}</div><div class="radar-wrap" id="bw-radar">${radarSVG([{v:b.axes||{}}],{size:170})}</div></div>
+     <div class="bp-pal-grid"><div class="axes">${AXES.map(([k,lab])=>`<label class="axis" for="ax-${k}"><span>${lab}</span><input type="range" id="ax-${k}" data-axis="${k}" min="0" max="5" step="1" value="${b.axes?.[k]||0}"><output id="axo-${k}">${b.axes?.[k]||'–'}</output></label>`).join('')}</div><div class="radar-wrap" id="bw-radar">${radarSVG([{v:b.axes||{}}],{size:190})}</div></div>
      <div class="field"><span class="lbl">Flavours &amp; aromas</span><div class="chips">${quick.map(tg=>`<button type="button" class="chip tag" data-a="stTag" data-v="${i}" data-tag="${esc(tg)}" aria-pressed="${(b.tags||[]).includes(tg)}">${esc(tg)}</button>`).join('')}</div>
       <div class="row"><input class="input" id="st-ctag-${i}" data-st="ctag" data-i="${i}" placeholder="Add your own flavour" style="max-width:220px;padding:6px 10px"><button type="button" class="btn sm" data-a="stAddTag" data-v="${i}">Add</button></div></div>
     </div>
    </div>`;
   rBands();
 }
-function slider(k,label,min,max,step,val,out,after='<span></span>'){
-  return `<div class="sl"><label for="bs-${k}">${label}</label><div class="sl-track"><span class="sl-band" id="band-${k}" hidden></span><input type="range" id="bs-${k}" data-bs="${k}" min="${min}" max="${max}" step="${step}" value="${val}"></div><output id="bo-${k}">${out}</output>${after}</div>`}
+function slider(k,label,min,max,step,val,out){
+  return `<div class="sl"><label for="bs-${k}">${label}</label><div class="sl-track"><span class="sl-band" id="band-${k}" hidden></span><input type="range" id="bs-${k}" data-bs="${k}" min="${min}" max="${max}" step="${step}" value="${val}"></div><output id="bo-${k}">${out}</output>
+   <span class="sl-step"><button type="button" data-a="slStep" data-v="${k}:1" aria-label="${label} up">▲</button><button type="button" data-a="slStep" data-v="${k}:-1" aria-label="${label} down">▼</button></span></div>`}
+/* fine steps for the ▲▼ buttons, finer than the slider */
+const fineStep = (k,v,dir)=>k==='temp'?1:k==='ml'?5:(dir>0?v:v-1)<60?1:(dir>0?v:v-1)<300?5:(dir>0?v:v-1)<1200?15:60;
+function setBrewVal(k,val,fromSlider){const b=curBrew();
+  if(k==='s'){b.s=Math.max(1,Math.round(val));$('#bo-s').textContent=fmtS(b.s);rTabTime(S.cur);if(!fromSlider)$('#bs-s').value=nearIdx(timeVals(),b.s);if(!T.run){tReset(S.cur);rTimer()}}
+  if(k==='temp'){b.temp=clamp(Math.round(val),40,100);$('#bo-temp').textContent=fmtT(b.temp,S.style);if(!fromSlider)$('#bs-temp').value=b.temp}
+  if(k==='ml'){b.ml=clamp(Math.round(val),20,5000);S.touched.add('ml');$('#bo-ml').textContent=b.ml+' '+volU();if(!fromSlider){if(b.ml>volMax())rBrews();else $('#bs-ml').value=b.ml}}
+  rBands();rCompare()}
+
+/* liquor: a continuous gradient over the colours this kind of tea can take; other brews are marked on it */
+const LIQ_GREEN=['#F3F4DF','#E4E7BC','#D4DD93','#C0CB66','#A7B542','#8FAA3C','#7FA03A','#5F8A31','#476F2A'];
+const LIQ_WARM=['ivory','pale','straw','lemon','gold','honey','amber','orange','copper','brick','ruby','garnet','chestnut','mahogany','espresso','ebony'];
+function liqStops(){const ls=sRec().liqs;const green=['celadon','spring','jade','emerald','matcha'];
+  if(ls.filter(x=>green.includes(x)).length*2>=ls.length)return LIQ_GREEN;
+  const idx=ls.map(x=>LIQ_WARM.indexOf(x)).filter(x=>x>=0);if(!idx.length)return LIQ.map(x=>x[2]);
+  return LIQ_WARM.slice(Math.max(0,Math.min(...idx)-2),Math.min(LIQ_WARM.length,Math.max(...idx)+3)).map(liqHex)}
+const hexRgb = h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const rgbHex = c=>'#'+c.map(x=>Math.round(x).toString(16).padStart(2,'0')).join('').toUpperCase();
+function gradAt(stops,p){const x=clamp(p,0,1)*(stops.length-1),i=Math.min(stops.length-2,Math.floor(x)),f=x-i;const a=hexRgb(stops[i]),b=hexRgb(stops[i+1]);return rgbHex(a.map((v,j)=>v+(b[j]-v)*f))}
+function gradPos(stops,hex){const c=hexRgb(hex);let best=0,bd=1e9;for(let k=0;k<=200;k++){const d=hexRgb(gradAt(stops,k/200)).reduce((s,v,j)=>s+(v-c[j])**2,0);if(d<bd){bd=d;best=k/200}}return best}
+function liqGrad(){const b=curBrew(),st=liqStops();
+  const marks=S.steeps.map((x,k)=>k!==S.cur&&x.liq?`<span class="lg-mark" style="left:${gradPos(st,liqHex(x.liq))*100}%;--c:${liqHex(x.liq)}" title="Brew ${k+1}: ${liqName(x.liq)}">${k+1}</span>`:'').join('');
+  return `<div class="field"><div class="lg-head"><label class="lbl" for="bs-liq">Liquor colour</label><span class="liq-name" id="lg-name">${b.liq?liqName(b.liq):'Not set'}</span><button type="button" class="linkbtn lg-clear" id="lg-clear" data-a="liqClear" ${b.liq?'':'hidden'}>Clear</button></div>
+   <div class="lg ${b.liq?'':'unset'}" style="--grad:linear-gradient(90deg,${st.join(',')});--c:${b.liq?liqHex(b.liq):'transparent'}"><div class="lg-marks" aria-hidden="true">${marks}</div>
+    <input type="range" id="bs-liq" data-bs="liq" min="0" max="1000" value="${b.liq?Math.round(gradPos(st,liqHex(b.liq))*1000):500}" aria-label="Liquor colour" aria-valuetext="${b.liq?liqName(b.liq):'not set'}"></div></div>`}
 /* recommended ranges for the current brew. Water follows the leaf you chose (the guide's g per 100 ml);
    time follows how strong that makes the brew: more leaf per ml, shorter steeps. */
 function brewRanges(){const rec=sProd()||sRec(),b=curBrew(),i=S.cur;const g=+S.g||0;
@@ -129,25 +154,21 @@ function rBands(){if(!$('#bw-panel'))return;const r=brewRanges(),b=curBrew(),tv=
 function rOverall(){const r=S.rating;
   $('#bw-overall').innerHTML=`<span class="lbl">Overall</span><div class="rating" role="group" aria-label="Overall rating">${Array.from({length:10},(_,i)=>`<button type="button" data-a="sRate" data-v="${i+1}" class="${r===i+1?'sel':r>i+1?'on':''}" aria-pressed="${r===i+1}">${i+1}</button>`).join('')}</div>
    ${S.style==='gongfu'||S.rinse?`<label class="toggle"><input type="checkbox" id="bw-rinse" ${S.rinse?'checked':''}> Rinsed first</label>`:''}
-   <label class="bw-at"><span class="lbl">Brewed</span><input class="input" type="datetime-local" id="bw-at" value="${toLocalInput(S.at)}"></label>`}
+   <button type="button" class="btn primary fabext" data-a="saveSession"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>${S.editing?'Save changes':'Add to log'}</button>`}
 function rTabTime(k){const e=$('#btt-'+k);if(e)e.textContent=fmtS(S.steeps[k].s)}
 
-/* comparison with earlier sessions */
-const CMP_PER=4;
-function sessRange(vals,f){const v=vals.filter(x=>x!=null&&x!=='');if(!v.length)return '—';const lo=Math.min(...v),hi=Math.max(...v);return lo===hi?f(lo):f(lo)+'–'+f(hi)}
-function cmpCol(b,now){const v=vesselOf(b);const st=b.steeps||[];
-  const temps=noTemp(b.style)?null:st.length?st.map(s=>s.temp??b.temp):[b.temp],mls=st.length?st.map(s=>s.ml??b.ml):[b.ml];
-  return {now,id:b.id,head:now?(S.editing?fmtDate(b.at):'Today'):fmtDate(b.at),
-   rows:[STYLE[b.style]||'—',esc(v.name),b.g?b.g+' g':'—',
-    st.length?`<div class="cmp-brews">${st.map((s,i)=>`<span class="cb" title="Brew ${i+1}"><span>${temps?toU(temps[i])+'°':b.style==='ice'?'ice':'cold'}</span><span>${mls[i]}${b.style==='ice'?'g':'ml'}</span><span>${fmtS(s.s)}</span></span>`).join('')}</div>`:'—',b.rating?`<b>${b.rating}</b><small>/10</small>`:'—']}}
+/* comparison with earlier sessions: one block per session, brews as aligned temp · water · time items */
+const CMP_PER=3;
+function cmpSess(b,now){const st=b.steeps||[];const u=b.style==='ice'?'g':'ml';
+  const brews=st.length?`<div class="cmp-brews">${st.map((s,i)=>`<span class="cb" title="Brew ${i+1}"><span>${noTemp(b.style)?(b.style==='ice'?'ice':'cold'):toU(s.temp??b.temp)+'°'}</span><span>${s.ml??b.ml}${u}</span><span>${fmtS(s.s)}</span></span>`).join('')}</div>`:'<span class="muted">No brews</span>';
+  return `<div class="cs ${now?'cur':''}"><div class="cs-head"><b>${now?(S.editing?fmtDate(b.at):'Today'):fmtDate(b.at)}</b>${b.rating?`<span class="cs-rate">${b.rating}<small>/10</small></span>`:''}${now?'':`<button type="button" class="linkbtn" data-a="useBrew" data-v="${esc(b.id)}" title="Use this session's leaf, water, temperature and vessel">Use</button>`}</div>
+   <div class="cs-meta">${[STYLE[b.style],esc(vesselOf(b).name),b.g?b.g+' g':''].filter(Boolean).join(' · ')}</div>${brews}</div>`}
 function rCompare(){const el=$('#bw-compare');if(!el||!S)return;
   const past=brewsOf(S.teaId).filter(b=>b.id!==S.id).sort((a,b)=>dt(b.at)-dt(a.at));
   const pages=Math.max(1,Math.ceil(past.length/CMP_PER));S.cpage=clamp(S.cpage,0,pages-1);
-  const cur={...S,steeps:S.steeps};const cols=[cmpCol(cur,true),...past.slice(S.cpage*CMP_PER,(S.cpage+1)*CMP_PER).map(b=>cmpCol(b,false))];
-  const labels=['Method','Vessel','Leaf','Brews<small>temp · water · time</small>','Rating'];
-  el.innerHTML=`<div class="panel-head"><h2>Compared with earlier sessions</h2><span class="aside muted">${past.length?past.length+' earlier session'+(past.length>1?'s':''):'Your first session with this tea'}</span></div>
-   <div class="tbl-wrap"><table class="cmp"><thead><tr><th scope="col"><span class="sr">Setting</span></th>${cols.map(c=>`<th scope="col" class="${c.now?'cur':''}">${c.head}${c.now?'':`<button type="button" class="linkbtn" data-a="useBrew" data-v="${esc(c.id)}" title="Use this session's leaf, water, temperature and vessel">Use</button>`}</th>`).join('')}</tr></thead>
-   <tbody>${labels.map((l,r)=>`<tr><th scope="row">${l}</th>${cols.map(c=>`<td class="${c.now?'cur':''}">${c.rows[r]}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+  el.innerHTML=`<div class="panel-head"><h2>Compared with earlier sessions</h2><span class="aside muted">${past.length?past.length+' earlier':'First session'}</span></div>
+   <div class="cs-key muted"><span>temp</span><span>water</span><span>time</span></div>
+   ${cmpSess(S,true)}${past.slice(S.cpage*CMP_PER,(S.cpage+1)*CMP_PER).map(b=>cmpSess(b,false)).join('')}
    ${pages>1?`<div class="dots" role="group" aria-label="Pages of earlier sessions">${Array.from({length:pages},(_,p)=>`<button type="button" data-a="cPage" data-v="${p}" aria-label="Page ${p+1}" aria-current="${p===S.cpage}"></button>`).join('')}</div>`:''}`}
 
 /* side: guide and the tea */
@@ -210,19 +231,18 @@ function useBrew(id){const p=store.brews.find(x=>x.id===id);if(!p)return;S.g=p.g
   ['g','ml'].forEach(k=>S.touched.add(k));if(!T.run)tReset(S.cur);renderBrew();toast('Settings from '+fmtDate(p.at)+' applied')}
 function addStepTag(i){const inp=$('#st-ctag-'+i);const val=inp.value.trim().toLowerCase();if(!val)return;const s=S.steeps[i];s.tags=s.tags||[];if(!s.tags.includes(val))s.tags.push(val);rBrews();setTimeout(()=>$('#st-ctag-'+i)?.focus(),0)}
 function brewInput(t){
-  if(t.id==='bw-g'){const n=parseFloat(t.value);if(!isNaN(n)){S.g=Math.max(0,n);S.touched.add('g');rBands();rCompare()}return true}
+  if(t.id==='bw-g'){t.style.width=Math.max(1.5,t.value.length+.3)+'ch';const n=parseFloat(t.value);if(!isNaN(n)){S.g=Math.max(0,n);S.touched.add('g');rBands();rCompare()}return true}
   if(t.dataset.bs){const b=curBrew(),k=t.dataset.bs;
     if(k==='note'){b.note=t.value;return true}
-    if(k==='s'){b.s=timeVals()[+t.value];$('#bo-s').textContent=fmtS(b.s);rTabTime(S.cur)}
-    if(k==='temp'){b.temp=+t.value;$('#bo-temp').textContent=fmtT(b.temp,S.style)}
-    if(k==='ml'){b.ml=+t.value;S.touched.add('ml');$('#bo-ml').textContent=b.ml+' '+volU()}
-    rBands();rCompare();return true}
-  if(t.dataset.axis){const k=t.dataset.axis,b=curBrew();b.axes={...blankAxes(),...b.axes,[k]:+t.value};$('#axo-'+k).textContent=t.value==='0'?'–':t.value;$('#bw-radar').innerHTML=radarSVG([{v:b.axes}],{size:170});return true}
+    if(k==='liq'){b.liq=gradAt(liqStops(),t.value/1000);const lg=t.closest('.lg');lg.classList.remove('unset');lg.style.setProperty('--c',b.liq);$('#lg-name').textContent=liqName(b.liq);$('#lg-clear').hidden=false;t.setAttribute('aria-valuetext',liqName(b.liq));
+      const d=$('#bt-'+S.cur+' .ldot');if(d)d.style.setProperty('--liq',b.liq);return true}
+    setBrewVal(k,k==='s'?timeVals()[+t.value]:+t.value,true);return true}
+  if(t.dataset.axis){const k=t.dataset.axis,b=curBrew();b.axes={...blankAxes(),...b.axes,[k]:+t.value};$('#axo-'+k).textContent=t.value==='0'?'–':t.value;$('#bw-radar').innerHTML=radarSVG([{v:b.axes}],{size:190});return true}
   return false}
 function brewChange(t){
   if(t.id==='bw-g'){t.value=S.g;rTop();return true}
   if(t.id==='bw-rinse'){S.rinse=t.checked;return true}
-  if(t.id==='bw-at'){const d=new Date(t.value);if(!isNaN(d))S.at=d.toISOString();return true}
+  if(t.id==='bw-at'){const[y,m,d]=t.value.split('-').map(Number);if(y){const o=dt(S.at);o.setFullYear(y,m-1,d);S.at=o.toISOString()}return true}
   return false}
 function brewAction(a,v,el){
   switch(a){
@@ -235,11 +255,11 @@ function brewAction(a,v,el){
    case 'brewAdd':addBrew();if(!T.run){tReset(S.cur);rTimer()}return true;
    case 'brewRm':S.steeps.splice(S.cur,1);S.cur=Math.max(0,S.cur-1);if(T.brew>=S.steeps.length)T.brew=S.steeps.length-1;rBrews();rCompare();rTimer();return true;
    case 'brewNext':addBrew();tReset(S.cur);rTimer();return true;
-   case 'toTimer':tReset(S.cur);rTimer();toast(`Timer set to ${fmtS(T.target)} for brew ${S.cur+1}`);return true;
+   case 'slStep':{const[k,d]=v.split(':');const dir=+d;const cur=curBrew()[k]??sRec().target;setBrewVal(k,cur+dir*fineStep(k,cur,dir));return true}
+   case 'liqClear':curBrew().liq='';rBrews();return true;
    case 'tStart':tStart();return true;
    case 'tStop':tStopLog();return true;
    case 'tReset':tReset(T.brew);rTimer();return true;
-   case 'stLiq':{const b=S.steeps[+v];b.liq=b.liq===el.dataset.liq?'':el.dataset.liq;rBrews();rCompare();return true}
    case 'stScore':{const[i,n]=v.split(':').map(Number);S.steeps[i].score=S.steeps[i].score===n?0:n;rBrews();return true}
    case 'stTag':{const s=S.steeps[+v];const tg=el.dataset.tag;s.tags=s.tags||[];const k=s.tags.indexOf(tg);k>=0?s.tags.splice(k,1):s.tags.push(tg);el.setAttribute('aria-pressed',k<0);return true}
    case 'stAddTag':addStepTag(+v);return true;

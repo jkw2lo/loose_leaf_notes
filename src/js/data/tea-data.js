@@ -8,7 +8,10 @@ const LIQ = [
  ['milky','Milky tan','#C9A27A'],['rose','Rose','#C2566E'],['hibiscus','Hibiscus','#9C2246']
 ];
 const LIQM = Object.fromEntries(LIQ.map(([id,n,h])=>[id,{id,n,h}]));
-const liqHex = id=>LIQM[id]?.h||'#C9A24A';
+const liqHex = id=>id?.[0]==='#'?id:LIQM[id]?.h||'#C9A24A';
+// A liquor is a named colour id, or an exact hex picked on the brew page's gradient; hex gets the nearest name.
+function liqName(id){if(LIQM[id])return LIQM[id].n;if(id?.[0]!=='#')return '';const c=[1,3,5].map(i=>parseInt(id.slice(i,i+2),16));let best=LIQ[0],bd=1e9;
+  LIQ.forEach(L=>{const d=[1,3,5].reduce((s,i,j)=>s+(parseInt(L[2].slice(i,i+2),16)-c[j])**2,0);if(d<bd){bd=d;best=L}});return '≈ '+best[1]}
 
 // Brewing methods. Only the methods listed for a tea type are offered for it.
 const STY = [
