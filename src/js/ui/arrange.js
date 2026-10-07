@@ -27,8 +27,9 @@
      canExport(),             Return a message to block "Export all pages" (for example, unsaved work).
      shortcut: 'e'            Key that toggles arrange mode (ignored while typing).
    })
-   Exports are UI Field Guide mockup files ({app, version, name, screens:[{sid, name, frame, notes, els}]}): open them
-   with Open → Open a file. Widths are scaled to the tool's frame (1280 desktop, 834 tablet, 390 mobile).
+   Exports are UI Field Guide mockup files ({app, version, name, screens:[{sid, name, frame, notes, els, base}]}): open
+   them with Open → Open a file. Widths are scaled to the tool's frame (1280 desktop, 834 tablet, 390 mobile). Each screen
+   carries its original (base), so the tool's Copy for Claude → Changes only lists just what you changed.
    Arrange.toggle(on?)  Arrange.apply()  Arrange.exportMockup(all) */
 (function(){
 'use strict';
@@ -193,8 +194,10 @@ function measure(name,sid){
     if(e.dataset.mockNote)el.note=e.dataset.mockNote;out.push(el)};
   qa('[data-mock]').forEach(e=>{if(!e.closest('.arr-ui,[data-mock-skip]'))add(e,e.dataset.mock)});
   qa('h1,h2,table,select,textarea,input[type=range],input[type=search],input[type=text],input[type=date],input[type=datetime-local],[role=tablist]').forEach(e=>{if(!e.hasAttribute('data-mock')&&!e.closest('[data-mock-skip],.arr-ui')&&!closedIn(e))add(e,guess(e))});
-  out.sort((a,b)=>a.y-b.y||a.x-b.x);
-  return {sid,name,frame,notes:`Measured from the live page at ${W}px wide${Math.abs(k-1)>.01?`, scaled to the ${FRAMES[frame]}px frame`:''}.`,els:out,guides:[],layout:''}}
+  out.sort((a,b)=>a.y-b.y||a.x-b.x);out.forEach((e,i)=>e.bid=`${sid}-${i+1}`);
+  // base: the page as it is now, so the tool's Copy for Claude → Changes only can list just what you change
+  return {sid,name,frame,notes:`Measured from the live page at ${W}px wide${Math.abs(k-1)>.01?`, scaled to the ${FRAMES[frame]}px frame`:''}.`,els:out,
+   base:{title:name,url:/^https?:/.test(location.href)?location.href.split('#')[0]:'',at:Date.now(),els:out.map(e=>({...e}))},guides:[],layout:''}}
 const frames=n=>new Promise(r=>{const f=k=>k?nextFrame(()=>f(k-1)):setTimeout(r,60);f(n)});
 async function exportMockup(all){const wasOn=S.on;if(wasOn){undecorate();document.body.classList.remove('arr-on')}
   const y=scrollY;const screens=[];const sid=(n,i)=>(slug(n)||'screen')+'-'+(i+1);

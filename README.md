@@ -29,7 +29,7 @@ Press **E** on any page (or **Settings → Layout → Arrange the layout**) to e
 The layout is saved with your settings, so it syncs. The toolbar can also:
 
 - **Copy layout**: copies the layout as JSON. Paste it into a request to make it the default in the code.
-- **Export page / Export all pages**: downloads (and copies) a UI Field Guide mockup file of the live page(s). Open it in UI Field Guide with **Open → Open a file**, rework it, then use **Copy for Claude** and paste the result back as the next design request. Element types are UI Field Guide codes, and widths are scaled to its frames (1280 desktop, 834 tablet, 390 mobile).
+- **Export page / Export all pages**: downloads (and copies) a UI Field Guide mockup file of the live page(s). Open it in UI Field Guide with **Open → Open a file**, rework it, then use **Copy for Claude** and paste the result back as the next design request. Each page remembers how it looked when exported, so **Changes only** lists just what you changed. Element types are UI Field Guide codes, and widths are scaled to its frames (1280 desktop, 834 tablet, 390 mobile).
 
 ### Using it in another project
 
