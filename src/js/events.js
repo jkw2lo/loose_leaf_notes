@@ -41,6 +41,8 @@ document.addEventListener('click',async e=>{
    case 'gReset':{const all={...(store.settings.guideOverrides||{})};delete all[state.gSel+'|'+state.gStyle];store.setSettings({guideOverrides:all});renderGuide();toast('Guide reset to default');return}
    case 'editGuide':closeSheet();setView('guide',{gSel:v,gStyle:el.dataset.s});return;
    case 'setMode':store.setSettings({tempMode:v});renderSettings();return;
+   case 'arrange':Arrange.toggle(true);return;
+   case 'layoutReset':if(!arm(el,'Tap again to reset'))return;store.setSettings({layout:{}});Arrange.apply();renderSettings();toast('Layout reset on every page');return;
    case 'setUnit':store.setSettings({unit:v});renderView();return;
    case 'rmWare':store.setSettings({vessels:store.settings.vessels.filter(x=>x.id!==v)});renderSettings();return;
    case 'addWare':{const vt=VT[v];const same=store.settings.vessels.filter(x=>x.type===v).length;store.setSettings({vessels:[...store.settings.vessels,{id:uid('w'),type:v,name:vt.name+(same?' '+(same+1):''),ml:vt.ml}]});renderSettings();toast(vt.name+' added to your teaware');return}

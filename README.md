@@ -15,6 +15,30 @@ It runs entirely in the browser with no build step and no dependencies. It can a
 - **Journal and insights.** Sessions by date, plus what correlates with your best-rated cups.
 - **Settings.** Your teaware (only these appear when logging), temperature input style (dial, steps, scale or typed), °C/°F, your own tea types, export and restore.
 
+## Arrange mode and mockup export
+
+Press **E** on any page (or **Settings → Layout → Arrange the layout**) to edit the layout in place:
+
+- **Drag a block** to reorder it. Arrow keys do the same when a block is focused.
+- **Drag a block's right edge** to change its width (on the Home stats grid). Shift + arrow keys do the same.
+- **Drag a column divider** to resize two-column layouts: shelf list vs. stats panel, brew page vs. side column, sliders vs. palate, content vs. metrics rail.
+- **Hide** removes a block you don't use; it stays visible (faded) in arrange mode so you can bring it back.
+- **Reset page** clears your changes on the current page. Press **Esc** or **Done** to finish.
+
+The layout is saved with your settings, so it syncs. The toolbar can also:
+
+- **Copy layout**: copies the layout as JSON. Paste it into a request to make it the default in the code.
+- **Export page / Export all pages**: copies and downloads a mockup of the live page(s) in the same JSON format as the UI mockup tool (`{name, screens: [{name, frame, purpose, elements: [{type, name, label, x, y, w, h}]}], flow}`). Rework it in the tool, then paste the result back as the next design request.
+
+### Using it in another project
+
+`src/js/ui/arrange.js` has no dependencies and brings its own styles. Copy it in, then:
+
+1. Mark blocks with `data-arr="key"` on a container and `data-arr-item="id"` (plus `data-arr-label`) on its direct children. Add `data-arr-grid` and set `--arr-n` in CSS for a resizable grid; give items `data-arr-span`.
+2. Mark two-column layouts with `data-arr-split="key"`, `data-arr-fixed="1|2"`, `data-arr-min`, `data-arr-max`, and use `var(--arr-w, <default>)` for the fixed column in CSS.
+3. Optionally add `data-mock="type"` (and `data-mock-label`) so exported mockups use your tool's element types. Headings, tables, inputs and tab lists are exported without it.
+4. Call `Arrange.init({name, load, save, current, screens, shortcut: 'e'})`. See the comment at the top of the file, and `src/js/core/arrange-setup.js` for this app's version.
+
 ## Run it locally
 
 You need Node 18 or newer only for the dev server and build. The app itself is plain HTML, CSS and JavaScript.
@@ -67,10 +91,11 @@ index.html                 Page shell; lists the stylesheet and scripts in load 
 src/styles.css             All styles; colours are tokens with light and dark themes
 src/js/data/tea-data.js    Tea families, types, brewing methods, liquor colours, places, brands, teaware
 src/js/core/               Utilities, guide logic, storage, export and backup
-src/js/ui/                 SVG illustrations: teaware, leaf piles, beaker, thermometer, charts
+src/js/ui/                 SVG illustrations and charts; arrange.js, the drop-in layout editor
 src/js/views/              Shelf, tea page, library, journal, insights, guides, settings, routing
 src/js/sheets/             Session form and timer, session detail, tea form and import, comboboxes
 src/js/events.js           Event delegation for the whole app
+src/js/core/arrange-setup.js  Arrange mode settings for this app (where layouts save, which pages export)
 src/js/main.js             Boot
 scripts/                   Dev server, build and checks (no dependencies)
 examples/sample-data.json  Sample teas and sessions to restore

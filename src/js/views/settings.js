@@ -26,6 +26,8 @@ function renderSettings(){
       <button class="rm" data-a="rmType" data-v="${esc(c.id)}" aria-label="Remove ${esc(c.name)}">×</button></div>`).join('')}</div>`:''}
     <div><button class="btn sm" data-a="addType">＋ Add a tea type</button></div>
    </div>
+   <div class="panel"><h2>Layout</h2><p class="sub">Drag blocks to reorder them, drag edges and column dividers to resize, and hide what you don’t use. Press <kbd>E</kbd> on any page to start, and Esc to finish. Your layout is saved with your settings.</p>
+    <div class="tool-row"><button class="btn sm primary" data-a="arrange">Arrange the layout</button>${Object.keys(s.layout||{}).length?'<button class="btn sm" data-a="layoutReset">Reset every page</button>':''}</div></div>
    <div class="panel"><h2>Your data</h2>
     <div class="tool-row">${canExport()?'<button class="btn sm" data-a="export" data-v="csv">Export sessions (CSV)</button><button class="btn sm" data-a="export" data-v="json">Export everything (JSON)</button>':'<span class="sub">Export is not available in this view.</span>'}
     <label class="btn sm" for="importFile" style="cursor:pointer">Restore from a backup</label><input type="file" id="importFile" accept="application/json,.json" hidden>

@@ -19,7 +19,7 @@ function teaSummary(t){
 }
 const monthYear = iso=>iso?dt(iso).toLocaleDateString(undefined,{month:'short',year:'numeric'}):'';
 /* the narrow metrics column beside Library and Journal */
-const rail = items=>`<aside class="rail" aria-label="Metrics">${items.filter(Boolean).map(([v,l])=>`<div class="rail-stat"><b>${v}</b><span>${l}</span></div>`).join('')}</aside>`;
+const rail = (key,items)=>{items=items.filter(Boolean);return `<aside class="rail" aria-label="Metrics" data-arr="${key}" data-mock="lay.stats" data-mock-label="${esc(items.map(([v,l])=>`${String(v).replace(/<[^>]+>/g,'')} ${l}`).join(', '))}">${items.map(([v,l])=>`<div class="rail-stat" data-arr-item="${norm(l.replace(/[·\d].*$/,''))}" data-arr-label="${esc(l)}"><b>${v}</b><span>${l}</span></div>`).join('')}</aside>`};
 function spentStr(teas){const by={};teas.forEach(t=>{const k=stockOf(t);if(k?.price)by[k.cur]=(by[k.cur]||0)+k.price});const e=Object.entries(by);return e.length?e.map(([c,n])=>money(n,c)).join(' + '):null}
 function renderLibrary(){
   const el=$('#view-library');if(store.mode==='pending'){el.innerHTML='<p class="loading">Opening your notes…</p>';return}
@@ -33,17 +33,17 @@ function renderLibrary(){
   const counts={};all.forEach(t=>counts[t.fam]=(counts[t.fam]||0)+1);
   const nFin=all.filter(t=>t.finished).length,grams=store.brews.reduce((a,b)=>a+(+b.g||0),0),rebuyN=all.filter(t=>t.verdict?.rebuy==='yes').length,spent=spentStr(all);
   const rated=all.map(t=>teaSummary(t).score).filter(Boolean);
-  const sec=(title,items,note)=>items.length?`<section class="lib-sec"><div class="lib-sec-head"><h2>${title}</h2><span class="count">${items.length}</span>${note?`<span class="muted">${note}</span>`:''}</div><div class="libgrid">${items.map(libCard).join('')}</div></section>`:'';
+  const sec=(id,title,items,note)=>items.length?`<section class="lib-sec" data-arr-item="${id}" data-arr-label="${title}"><div class="lib-sec-head"><h2>${title}</h2><span class="count">${items.length}</span>${note?`<span class="muted">${note}</span>`:''}</div><div class="libgrid" data-mock="lay.grid" data-mock-label="${esc(title+': '+items.map(x=>x.t.name).join(', '))}">${items.map(libCard).join('')}</div></section>`:'';
   el.innerHTML=`<div class="page-head"><div><h1>Library</h1><p>Every tea you have kept notes on: the ones in rotation, then the ones you have finished.</p></div></div>
   ${!all.length?`<div class="empty"><h2>Your library is empty</h2><p>Teas you add appear here, and stay with their sessions and verdict after you finish them.</p><button class="btn primary" data-a="newTea">＋ Add a tea</button></div>`:`
   ${famChips(counts,id=>state.libFam===id,'libFam',!state.libFam)}
-  <div class="with-rail"><div class="rail-main">
+  <div class="with-rail" data-arr-split="library" data-arr-fixed="2" data-arr-min="140" data-arr-max="360"><div class="rail-main">
    <div class="tool-row lib-tools"><label class="search">${searchIcon}<input id="libQ" type="search" placeholder="Search name, brand, origin, verdict" value="${esc(state.libQ)}" aria-label="Search library"></label>
     <select class="pill" id="libRebuy" aria-label="Would buy again"><option value="">Any verdict</option>${Object.entries(REBUY).map(([k,v])=>`<option value="${k}" ${state.libRebuy===k?'selected':''}>${v}</option>`).join('')}</select>
     <select class="pill" id="libSort" aria-label="Sort"><option value="recent">Most recent</option><option value="rating" ${state.libSort==='rating'?'selected':''}>Highest rated</option><option value="sessions" ${state.libSort==='sessions'?'selected':''}>Most brewed</option><option value="name" ${state.libSort==='name'?'selected':''}>Name A–Z</option></select></div>
-   ${list.length?sec('In rotation',rot)+sec('Finished',fin):`<div class="empty"><h2>Nothing matches</h2><button class="btn" data-a="libClear">Clear filters</button></div>`}
+   ${list.length?`<div class="lib-secs" data-arr="library-sections">${sec('rotation','In rotation',rot)+sec('finished','Finished',fin)}</div>`:`<div class="empty"><h2>Nothing matches</h2><button class="btn" data-a="libClear">Clear filters</button></div>`}
   </div>
-  ${rail([[all.length,'teas in all'],[all.length-nFin,'in rotation'],[nFin,'finished'],[store.brews.length,'sessions'],[Math.round(grams)+'<small> g</small>','leaf brewed'],spent&&[spent,'spent on tea'],rated.length&&[avg(rated).toFixed(1),'average rating'],nFin&&[rebuyN,'you’d buy again']])}
+  ${rail('library-rail',[[all.length,'teas in all'],[all.length-nFin,'in rotation'],[nFin,'finished'],[store.brews.length,'sessions'],[Math.round(grams)+'<small> g</small>','leaf brewed'],spent&&[spent,'spent on tea'],rated.length&&[avg(rated).toFixed(1),'average rating'],nFin&&[rebuyN,'you’d buy again']])}
   </div>`}`;
   if(focused){const i=$('#libQ');i.focus();try{i.setSelectionRange(caret,caret)}catch{}}
 }

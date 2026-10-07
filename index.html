@@ -13,7 +13,7 @@
 <body>
 <header class="top">
   <div class="wrap">
-    <button class="brand" data-a="view" data-v="shelf" aria-label="Tea shelf">
+    <button class="brand" data-a="view" data-v="shelf" aria-label="Tea shelf" data-mock="txt.heading" data-mock-label="Loose Leaf Notes">
       <svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="13" rx="12" ry="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 13c0 8 5 14 12 14s12-6 12-14" fill="none" stroke="currentColor" stroke-width="1.6"/><ellipse cx="16" cy="13.4" rx="9.5" ry="2.6" style="fill:var(--accent);opacity:.55"/><path d="M19 4c-4 0-6 3-5 6 3 0 6-2 5-6z" style="fill:var(--accent)"/></svg>
       <b>Loose Leaf Notes</b>
     </button>
@@ -24,7 +24,7 @@
       <button role="tab" data-a="view" data-v="insights" aria-selected="false">Insights</button>
       <button role="tab" data-a="view" data-v="guide" aria-selected="false">Guides</button>
     </nav>
-    <button class="icon-btn" id="gearBtn" data-a="view" data-v="settings" aria-label="Settings" title="Settings" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    <button class="icon-btn" id="gearBtn" data-mock="med.icon" data-mock-label="gear" data-a="view" data-v="settings" aria-label="Settings" title="Settings" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   </div>
 </header>
 
@@ -46,6 +46,7 @@
 <script src="src/js/core/guide.js"></script>
 <script src="src/js/core/store.js"></script>
 <script src="src/js/ui/illustrations.js"></script>
+<script src="src/js/ui/arrange.js"></script>
 <script src="src/js/views/shelf.js"></script>
 <script src="src/js/views/tea.js"></script>
 <script src="src/js/views/journal.js"></script>
@@ -60,6 +61,7 @@
 <script src="src/js/sheets/session-form.js"></script>
 <script src="src/js/core/export.js"></script>
 <script src="src/js/events.js"></script>
+<script src="src/js/core/arrange-setup.js"></script>
 <script src="src/js/main.js"></script>
 </body>
 </html>

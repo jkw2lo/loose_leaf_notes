@@ -11,14 +11,14 @@ function renderJournal(){
   el.innerHTML=`<div class="page-head"><div><h1>Journal</h1><p>Every session in the order you brewed it.</p></div></div>
    ${all.length?famChips(counts,id=>state.jcats.has(id),'jcat',!state.jcats.size):''}
    ${!all.length?`<div class="empty"><h2>No sessions yet</h2><p>Sessions you log under your teas appear here by date.</p><button class="btn primary" data-a="newSession">＋ Log a session</button></div>`:`
-   <div class="with-rail"><div class="rail-main">
+   <div class="with-rail" data-arr-split="journal" data-arr-fixed="2" data-arr-min="140" data-arr-max="360"><div class="rail-main">
     <div class="tool-row lib-tools"><label class="search">${searchIcon}<input id="jq" type="search" placeholder="Search tea, brand, flavours, notes" value="${esc(state.jq)}" aria-label="Search sessions"></label>
      <select class="pill" id="jmin" aria-label="Minimum rating"><option value="0">Any rating</option>${[9,8,7,6,5].map(n=>`<option value="${n}" ${state.jmin==n?'selected':''}>${n}+ only</option>`).join('')}</select></div>
     ${!list.length?`<div class="empty"><h2>No sessions match</h2><button class="btn" data-a="jClear">Clear filters</button></div>`:`
     <div class="tbl-wrap jtbl-wrap"><table class="tbl jtbl"><thead><tr><th scope="col">Name</th><th scope="col">Tea type</th><th scope="col">Date</th><th scope="col">Brew info</th><th scope="col" class="num">Rating</th></tr></thead>
      <tbody>${groups.map(g=>`<tr class="jmonth"><th colspan="5" scope="rowgroup">${g.k}<span>${g.items.length} session${g.items.length>1?'s':''}</span></th></tr>${g.items.map(journalRow).join('')}`).join('')}</tbody></table></div>`}
    </div>
-   ${rail([[thisMonth,'this month'],[streak(all),'day streak'],[all.length,'sessions in all'],rated.length&&[avg(rated.map(b=>b.rating)).toFixed(1),'average rating'],top&&[`<span class="rail-name">${esc(teaById(top[0])?.name||'—')}</span>`,`most brewed · ${top[1]}`],[steepTotal(all),'spent steeping']])}
+   ${rail('journal-rail',[[thisMonth,'this month'],[streak(all),'day streak'],[all.length,'sessions in all'],rated.length&&[avg(rated.map(b=>b.rating)).toFixed(1),'average rating'],top&&[`<span class="rail-name">${esc(teaById(top[0])?.name||'—')}</span>`,`most brewed · ${top[1]}`],[steepTotal(all),'spent steeping']])}
    </div>`}`;
   if(focused){const i=$('#jq');i.focus();try{i.setSelectionRange(caret,caret)}catch{}}
 }
