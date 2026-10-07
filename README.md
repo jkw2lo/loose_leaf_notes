@@ -20,7 +20,8 @@ It runs entirely in the browser with no build step and no dependencies. It can a
 Press **E** on any page (or **Settings → Layout → Arrange the layout**) to edit the layout in place:
 
 - **Drag a block** to reorder it. Arrow keys do the same when a block is focused.
-- **Drag a block's right edge** to change its width (on the Home stats grid). Shift + arrow keys do the same.
+- **Drag a block's right edge** to change its width, and its **bottom edge** to change its height. Shift + left/right and Shift + up/down do the same. Double-click an edge to reset it.
+- Every page's sections are blocks, plus the panels on Tea info, Insights, Settings and Guides, and the parts of the Home stats and the brew page.
 - **Drag a column divider** to resize two-column layouts: shelf list vs. stats panel, brew page vs. side column, sliders vs. palate, content vs. metrics rail.
 - **Hide** removes a block you don't use; it stays visible (faded) in arrange mode so you can bring it back.
 - **Reset page** clears your changes on the current page. Press **Esc** or **Done** to finish.
@@ -28,15 +29,15 @@ Press **E** on any page (or **Settings → Layout → Arrange the layout**) to e
 The layout is saved with your settings, so it syncs. The toolbar can also:
 
 - **Copy layout**: copies the layout as JSON. Paste it into a request to make it the default in the code.
-- **Export page / Export all pages**: copies and downloads a mockup of the live page(s) in the same JSON format as the UI mockup tool (`{name, screens: [{name, frame, purpose, elements: [{type, name, label, x, y, w, h}]}], flow}`). Rework it in the tool, then paste the result back as the next design request.
+- **Export page / Export all pages**: downloads (and copies) a UI Field Guide mockup file of the live page(s). Open it in UI Field Guide with **Open → Open a file**, rework it, then use **Copy for Claude** and paste the result back as the next design request. Element types are UI Field Guide codes, and widths are scaled to its frames (1280 desktop, 834 tablet, 390 mobile).
 
 ### Using it in another project
 
 `src/js/ui/arrange.js` has no dependencies and brings its own styles. Copy it in, then:
 
-1. Mark blocks with `data-arr="key"` on a container and `data-arr-item="id"` (plus `data-arr-label`) on its direct children. Add `data-arr-grid` and set `--arr-n` in CSS for a resizable grid; give items `data-arr-span`.
+1. Mark blocks with `data-arr="key"` on a container and `data-arr-item="id"` (plus `data-arr-label`) on its direct children, or add `data-arr-auto` to make every child a block. Add `data-arr-grid` and set `--arr-n` in CSS for a resizable grid; give items `data-arr-span`.
 2. Mark two-column layouts with `data-arr-split="key"`, `data-arr-fixed="1|2"`, `data-arr-min`, `data-arr-max`, and use `var(--arr-w, <default>)` for the fixed column in CSS.
-3. Optionally add `data-mock="type"` (and `data-mock-label`) so exported mockups use your tool's element types. Headings, tables, inputs and tab lists are exported without it.
+3. Optionally add `data-mock="type"` (a UI Field Guide code, plus `data-mock-label`) so exported mockups name elements precisely. Headings, tables, inputs and tab lists are exported without it.
 4. Call `Arrange.init({name, load, save, current, screens, shortcut: 'e'})`. See the comment at the top of the file, and `src/js/core/arrange-setup.js` for this app's version.
 
 ## Run it locally

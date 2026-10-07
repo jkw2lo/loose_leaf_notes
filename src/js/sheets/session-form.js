@@ -51,11 +51,11 @@ function renderBrew(){
   const t=sTea();if(!t){el.innerHTML=`<button class="back" data-a="view" data-v="shelf">← Tea shelf</button><div class="empty"><h2>This tea is no longer on your shelf</h2></div>`;return}
   const Ty=typeOf(t);
   el.innerHTML=`<div class="bw" data-arr-split="brew" data-arr-fixed="2" data-arr-min="260" data-arr-max="560">
-   <div class="bw-main">
-    <div class="bw-headrow"><div class="bw-head"><button class="back" data-a="brewBack" data-mock="nav.back">← Back to ${S.from?.view==='tea'?esc(t.name):({shelf:'tea shelf',library:'library',journal:'journal',insights:'insights',guide:'guides',settings:'settings'}[S.from?.view]||'tea shelf')}</button>
+   <div class="bw-main" data-arr="brew-main" data-arr-auto>
+    <div class="bw-headrow" data-arr="brew-head" data-arr-auto><div class="bw-head" data-arr-item="title" data-arr-label="Tea name"><button class="back" data-a="brewBack" data-mock="nav.back">← Back to ${S.from?.view==='tea'?esc(t.name):({shelf:'tea shelf',library:'library',journal:'journal',insights:'insights',guide:'guides',settings:'settings'}[S.from?.view]||'tea shelf')}</button>
      <h1>${esc(t.name)}${t.brand?`<span class="bw-brand"> – ${esc(t.brand)}</span>`:''}</h1>
      <div class="bw-sub"><span class="eyebrow" data-mock="txt.eyebrow">${esc(famOf(t.fam).name)}${Ty&&norm(Ty.name)!==norm(t.name)?' | '+esc(Ty.name):''}${S.editing?' · editing session':''}</span>${S.from?.view==='tea'?'':`<button type="button" class="linkbtn" data-a="openTea" data-v="${esc(t.id)}">Tea page &amp; all sessions</button>`}</div></div>
-     <div class="bw-timer" id="bw-timer" data-mock="ctl.timer"></div></div>
+     <div class="bw-timer" id="bw-timer" data-mock="ctl.timer" data-arr-item="timer" data-arr-label="Timer"></div></div>
     <section class="bw-params" aria-label="Today's brew parameters" data-arr="brew-params" data-mock="note.region" data-mock-label="Brew parameters">
      <div class="bw-top" id="bw-top" data-arr="brew-top" data-arr-item="top" data-arr-label="Settings row"></div>
      <div class="bw-brews" id="bw-brews" data-arr-item="brews" data-arr-label="Brews"></div>
@@ -91,16 +91,16 @@ function rBrews(){
   const C=famOf(sTea().fam);const quick=[...new Set([...S.steeps.flatMap(x=>x.tags||[]),...C.common])];
   $('#bw-brews').innerHTML=`<div class="vt" role="tablist" aria-orientation="vertical" aria-label="Brews" data-mock="nav.vtabs" data-mock-label="${S.steeps.map((_,k)=>'Brew '+(k+1)).join(', ')}, +">${tabs}<button type="button" class="vt-add" data-a="brewAdd" aria-label="Add a brew" title="Add a brew">＋</button></div>
    <div class="bp" id="bw-panel" role="tabpanel" aria-labelledby="bt-${i}" data-arr="brew-panel" data-arr-split="brew-panel" data-arr-fixed="1" data-arr-min="200" data-arr-max="560">
-    <div class="bp-left" data-arr-item="controls" data-arr-label="Sliders, colour and comments">
+    <div class="bp-left" data-arr-item="controls" data-arr-label="Sliders, colour and comments" data-arr="brew-controls" data-arr-auto>
      ${temp}
      ${slider('s','Time',0,tv.length-1,1,nearIdx(tv,b.s),fmtS(b.s))}
      ${slider('ml','Vol',20,volMax(),volStep(),b.ml,b.ml+' '+volU())}
-     <div class="sl-guide muted" id="bw-sl-guide"></div>
+     <div class="sl-guide muted" id="bw-sl-guide" data-arr-item="ranges" data-arr-label="Recommended ranges"></div>
      ${liqGrad()}
      <textarea class="textarea" id="bs-note" data-bs="note" rows="3" placeholder="Brew comments: what changed in this cup?" aria-label="Brew ${i+1} comments">${esc(b.note||'')}</textarea>
      ${S.steeps.length>1?`<button type="button" class="linkbtn danger-link bp-rm" data-a="brewRm">Remove brew ${i+1}</button>`:''}
     </div>
-    <div class="bp-pal" data-arr-item="palate" data-arr-label="Palate profile" data-mock="note.box" data-mock-label="Palate profile rating and spider graph">
+    <div class="bp-pal" data-arr="brew-palate" data-arr-auto data-arr-item="palate" data-arr-label="Palate profile" data-mock="note.box" data-mock-label="Palate profile rating and spider graph">
      <div class="bp-pal-head"><h3>Palate profile</h3><div class="cupscore" aria-label="Score for this cup">${[1,2,3,4,5].map(n=>`<button type="button" data-a="stScore" data-v="${i}:${n}" class="${b.score===n?'sel':b.score>n?'on':''}" aria-label="${n} of 5" aria-pressed="${b.score===n}">${n}</button>`).join('')}</div></div>
      <div class="bp-pal-grid"><div class="axes">${AXES.map(([k,lab])=>`<label class="axis" for="ax-${k}"><span>${lab}</span><input type="range" id="ax-${k}" data-axis="${k}" min="0" max="5" step="1" value="${b.axes?.[k]||0}"><output id="axo-${k}">${b.axes?.[k]||'–'}</output></label>`).join('')}</div><div class="radar-wrap" id="bw-radar">${radarSVG([{v:b.axes||{}}],{size:190})}</div></div>
      <div class="field"><span class="lbl">Flavours &amp; aromas</span><div class="chips">${quick.map(tg=>`<button type="button" class="chip tag" data-a="stTag" data-v="${i}" data-tag="${esc(tg)}" aria-pressed="${(b.tags||[]).includes(tg)}">${esc(tg)}</button>`).join('')}</div>
@@ -110,7 +110,7 @@ function rBrews(){
   rBands();
 }
 function slider(k,label,min,max,step,val,out){
-  return `<div class="sl"><label for="bs-${k}">${label}</label><div class="sl-track"><span class="sl-band" id="band-${k}" hidden></span><input type="range" id="bs-${k}" data-bs="${k}" min="${min}" max="${max}" step="${step}" value="${val}"></div><output id="bo-${k}">${out}</output>
+  return `<div class="sl" data-arr-item="sl-${k}" data-arr-label="${label} slider"><label for="bs-${k}">${label}</label><div class="sl-track"><span class="sl-band" id="band-${k}" hidden></span><input type="range" id="bs-${k}" data-bs="${k}" min="${min}" max="${max}" step="${step}" value="${val}"></div><output id="bo-${k}">${out}</output>
    <span class="sl-step"><button type="button" data-a="slStep" data-v="${k}:1" aria-label="${label} up">▲</button><button type="button" data-a="slStep" data-v="${k}:-1" aria-label="${label} down">▼</button></span></div>`}
 /* fine steps for the ▲▼ buttons, finer than the slider */
 const fineStep = (k,v,dir)=>k==='temp'?1:k==='ml'?5:(dir>0?v:v-1)<60?1:(dir>0?v:v-1)<300?5:(dir>0?v:v-1)<1200?15:60;
@@ -133,7 +133,7 @@ function gradAt(stops,p){const x=clamp(p,0,1)*(stops.length-1),i=Math.min(stops.
 function gradPos(stops,hex){const c=hexRgb(hex);let best=0,bd=1e9;for(let k=0;k<=200;k++){const d=hexRgb(gradAt(stops,k/200)).reduce((s,v,j)=>s+(v-c[j])**2,0);if(d<bd){bd=d;best=k/200}}return best}
 function liqGrad(){const b=curBrew(),st=liqStops();
   const marks=S.steeps.map((x,k)=>k!==S.cur&&x.liq?`<span class="lg-mark" style="left:${gradPos(st,liqHex(x.liq))*100}%;--c:${liqHex(x.liq)}" title="Brew ${k+1}: ${liqName(x.liq)}">${k+1}</span>`:'').join('');
-  return `<div class="field" data-mock="sel.gradient" data-mock-label="Liquor colour"><div class="lg-head"><label class="lbl" for="bs-liq">Liquor colour</label><span class="liq-name" id="lg-name">${b.liq?liqName(b.liq):'Not set'}</span><button type="button" class="linkbtn lg-clear" id="lg-clear" data-a="liqClear" ${b.liq?'':'hidden'}>Clear</button></div>
+  return `<div class="field" data-mock="sel.swatch" data-mock-label="Liquor colour"><div class="lg-head"><label class="lbl" for="bs-liq">Liquor colour</label><span class="liq-name" id="lg-name">${b.liq?liqName(b.liq):'Not set'}</span><button type="button" class="linkbtn lg-clear" id="lg-clear" data-a="liqClear" ${b.liq?'':'hidden'}>Clear</button></div>
    <div class="lg ${b.liq?'':'unset'}" style="--grad:linear-gradient(90deg,${st.join(',')});--c:${b.liq?liqHex(b.liq):'transparent'}"><div class="lg-marks" aria-hidden="true">${marks}</div>
     <input type="range" id="bs-liq" data-bs="liq" min="0" max="1000" value="${b.liq?Math.round(gradPos(st,liqHex(b.liq))*1000):500}" aria-label="Liquor colour" aria-valuetext="${b.liq?liqName(b.liq):'not set'}"></div></div>`}
 /* recommended ranges for the current brew. Water follows the leaf you chose (the guide's g per 100 ml);

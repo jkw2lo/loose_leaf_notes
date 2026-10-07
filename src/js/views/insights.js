@@ -9,7 +9,7 @@ function renderInsights(){
   const withAxes=rated.filter(hasAxes),fav=withAxes.filter(b=>b.rating>=8),rest=withAxes.filter(b=>b.rating<8);
   const mean=bs=>Object.fromEntries(AXES.map(([k])=>[k,avg(bs.map(b=>b.axes[k]||0))]));
   el.innerHTML=`<div class="page-head"><div><h1>Insights</h1><p>What your best cups have in common.</p></div></div>
-   <div class="ins-grid">
+   <div class="ins-grid" data-arr="insights-grid" data-arr-auto>
     <div class="stats"><div class="stat"><b>${all.length}</b><span>sessions</span></div><div class="stat"><b>${teas.length}</b><span>teas on the shelf</span></div><div class="stat"><b>${rated.length?avg(rated.map(b=>b.rating)).toFixed(1):'—'}</b><span>average rating</span></div><div class="stat"><b>${Math.round(leaf)}<span style="font-size:16px"> g</span></b><span>leaf brewed</span></div></div>
     <div class="panel"><h2>By family</h2><p class="sub">Bar shows sessions; the number is the average rating.</p><div class="cat-rows">${byCat.map(x=>`<button class="cat-row" data-a="shelfFam" data-v="${x.c.id}" style="--c:${liqHex(midLiq(x.c.liqs))}"><span class="nm"><span class="dot"></span>${x.c.name}</span><span class="cat-bar"><i style="width:${x.n/maxN*100}%"></i><em>${x.n}</em></span><span class="avg">${x.avg?x.avg.toFixed(1):'—'}</span></button>`).join('')}</div></div>
     <div class="panel"><h2>Palate of your favourites</h2><p class="sub">Average palate of sessions rated 8+ against the rest.</p>

@@ -8,7 +8,7 @@ function modePreview(id){
 function renderSettings(){
   const s=store.settings;const cts=s.customTypes||[];
   $('#view-settings').innerHTML=`<div class="page-head"><div><h1>Settings</h1><p>Make logging fit the way you brew.</p></div></div>
-  <div class="set-grid">
+  <div class="set-grid" data-arr="settings-grid" data-arr-auto>
    <div class="panel"><h2>Temperature input</h2><p class="sub">How you set water temperature when logging. You can also switch while logging.</p>
     <div class="modes">${TEMP_MODES.map(([id,n,d])=>`<button class="mode" data-a="setMode" data-v="${id}" aria-pressed="${s.tempMode===id}">${modePreview(id)}<b>${n}</b><span>${d}</span></button>`).join('')}</div>
     <div class="tool-row"><span class="lbl">Units</span><div class="seg sm"><button data-a="setUnit" data-v="C" aria-pressed="${s.unit!=='F'}">Celsius</button><button data-a="setUnit" data-v="F" aria-pressed="${s.unit==='F'}">Fahrenheit</button></div></div>

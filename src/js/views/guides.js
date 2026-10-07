@@ -19,7 +19,7 @@ function renderGuide(){
   const hint=(cur,def,txt)=>cur!==def?`<span class="gdef">default ${txt}</span>`:'';
   const focused=document.activeElement?.id==='gq';const caret=focused?document.activeElement.selectionStart:0;
   el.innerHTML=`<div class="page-head"><div><h1>Brewing guides</h1><p>The baseline every session is compared against. Edit any guide to match how you like to brew. Your version is used for suggestions, benchmarks and charts.</p></div></div>
-  <div class="gbrowser">
+  <div class="gbrowser" data-arr="guides" data-arr-auto>
    <aside class="glist"><label class="search">${searchIcon}<input id="gq" type="search" placeholder="Find a tea type" value="${esc(state.gq)}" aria-label="Find a tea type"></label><div class="gl-scroll" id="glItems">${guideListHTML()}</div></aside>
    <div class="panel gdetail">
     <div class="gd-head"><span class="cup lg" style="--liq:${liqHex(midLiq(r.liqs))}"></span><div style="min-width:0"><div class="eyebrow">${F.name} · ${F.native}</div><h2>${esc(gLabel(key))}</h2><p class="sub">${[T?.aka&&!T.custom?T.aka:null,T?.x.char].filter(Boolean).map(esc).join(' · ')||esc(F.proc)}</p></div></div>
