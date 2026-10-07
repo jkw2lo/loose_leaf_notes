@@ -8,6 +8,8 @@ Arrange.init({
   load:()=>store.settings.layout||{},
   save:layout=>store.setSettings({layout}),
   shortcut:'e',
+  // the shelf panel starts without the grams gauge and price chart; arrange mode can show them
+  defaults:{'shelf-main':{hide:['price']},'shelf-side':{hide:['gauge']}},
   current:()=>SCREEN_NAMES[state.view]||state.view,
   canExport:()=>state.view==='brew'&&brewDirty()?'Save or leave this brew before exporting every page.':'',
   before:()=>{closeSheet();arrBack={view:state.view,teaId:state.view==='brew'?S?.teaId:state.teaId}},

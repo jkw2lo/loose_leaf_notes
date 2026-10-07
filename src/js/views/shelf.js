@@ -35,23 +35,27 @@ function shelfRow(t,sel){const T=typeOf(t);const n=brewsOf(t.id).length;const k=
    <span class="trow-main"><span class="trow-name">${esc(t.name)}</span><span class="trow-sub">${[T&&norm(T.name)!==norm(t.name)?T.name:null,t.brand].filter(Boolean).map(esc).join(' · ')||esc(famOf(t.fam).name)}</span></span>
    <span class="trow-side">${k?`<span class="${k.left<=0?'out':k.left/k.total<.2?'low':''}">${k.left} g</span>`:''}<span>${n} brew${n===1?'':'s'}</span></span><span class="trow-arrow" aria-hidden="true">›</span></button>`}
 
-/* the panel beside the list */
+/* the panel beside the list: tabs with Log a brew beside them, then tea info and brews | stats and flavour */
 function shelfPanel(t){if(!t)return '';const tab=state.shelfTab||'stats';
-  return `<div class="seg sidetabs" role="tablist" data-mock-skip aria-label="${esc(t.name)}"><button type="button" role="tab" data-a="shelfTab" data-v="stats" aria-pressed="${tab==='stats'}" aria-selected="${tab==='stats'}">Tea stats</button><button type="button" role="tab" data-a="shelfTab" data-v="guide" aria-pressed="${tab==='guide'}" aria-selected="${tab==='guide'}">Brew guide</button></div>
+  return `<div class="hp-head"><div class="seg sidetabs" role="tablist" data-mock-skip aria-label="${esc(t.name)}"><button type="button" role="tab" data-a="shelfTab" data-v="stats" aria-pressed="${tab==='stats'}" aria-selected="${tab==='stats'}">Tea stats</button><button type="button" role="tab" data-a="shelfTab" data-v="guide" aria-pressed="${tab==='guide'}" aria-selected="${tab==='guide'}">Brew guide</button></div>
+    <button class="hs-log" data-a="logFor" data-v="${esc(t.id)}" data-mock="act.pill"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Log a brew</button></div>
    ${tab==='guide'?shelfGuide(t):shelfStats(t)}`}
 function shelfStats(t){
   const T=typeOf(t),bs=brewsOf(t.id).sort((a,b)=>dt(a.at)-dt(b.at)),k=stockOf(t);
   const opened=t.stock?.since||t.createdAt||bs[0]?.at;const days=opened?Math.max(0,Math.floor((Date.now()-dt(opened))/864e5)):null;
   const rated=bs.filter(hasAxes);const pal={};AXES.forEach(([x])=>pal[x]=rated.length?avg(rated.map(b=>b.axes[x]||0)):0);
-  return `<div class="hs" data-arr="home-stats" data-arr-grid>
-   <div class="hs-info" data-arr-item="info" data-arr-label="Tea info" data-arr-span="3" data-mock="note.box" data-mock-label="Tea info"><span class="cup" style="--liq:${liqHex(teaLiq(t))}"></span><div class="hs-info-txt"><h2>${esc(t.name)}</h2><span class="meta">${[t.brand,T?.name&&norm(T.name)!==norm(t.name)?T.name:famOf(t.fam).name].filter(Boolean).map(esc).join(' · ')}</span>${t.origin||t.harvest?`<span class="meta">${[t.origin,t.harvest].filter(Boolean).map(esc).join(' · ')}</span>`:''}
-    <span class="hs-links"><button class="linkbtn" data-a="openTea" data-v="${esc(t.id)}">Tea page &amp; sessions</button><button class="linkbtn" data-a="editTea" data-v="${esc(t.id)}">Edit</button></span></div></div>
-   <div class="hs-gauge" data-arr-item="gauge" data-arr-label="Grams used" data-arr-span="2">${k?gaugeSVG(k.used,k.total):`<div class="hs-nostock"><span class="muted">How much did you buy?</span><button class="linkbtn" data-a="editTea" data-v="${esc(t.id)}">Add the amount</button></div>`}
-    <div class="hs-strip" data-mock="lay.stats" data-mock-label="${bs.length} brews, ${days??'—'} days since opened"><div><b>${bs.length}</b><span>brew${bs.length===1?'':'s'}</span></div><div><b>${days??'—'}</b><span>day${days===1?'':'s'} since opened</span></div></div></div>
-   <div class="hs-logw" data-arr-item="log" data-arr-label="Log a brew" data-arr-span="1"><button class="hs-log" data-a="logFor" data-v="${esc(t.id)}" data-mock="act.pill"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Log a brew</button></div>
-   <div class="hs-card" data-arr-item="radar" data-arr-label="Flavour profile" data-arr-span="3" data-mock="data.radar" data-mock-label="Flavour profile"><h3>Flavour profile</h3>${rated.length?`<div class="hs-radar">${radarSVG([{v:pal}],{size:200})}</div><span class="muted hs-note">Average of ${rated.length} rated brew${rated.length===1?'':'s'}</span>`:'<p class="muted hs-note">Rate the palate on a brew to see its shape here.</p>'}</div>
-   <div class="hs-card" data-arr-item="price" data-arr-label="Price vs. rating" data-arr-span="3" data-mock="data.scatter" data-mock-label="Price vs. rating"><h3>Price vs. rating</h3>${priceRating(t)}</div>
-   <div class="hs-card hs-wide" data-arr-item="heat" data-arr-label="Brews heatmap" data-arr-span="6" data-mock="data.heatmap" data-mock-label="Brews"><h3>Brews</h3>${bs.length?heatmap(bs):'<p class="muted hs-note">No brews yet.</p>'}</div>
+  return `<div class="hs" data-arr-split="shelf-stats" data-arr-fixed="2" data-arr-min="150" data-arr-max="360">
+   <div class="hs-col" data-arr="shelf-main">
+    <div class="hs-info hs-grow" data-arr-item="info" data-arr-label="Tea info" data-mock="note.box" data-mock-label="Tea info"><span class="cup" style="--liq:${liqHex(teaLiq(t))}"></span><div class="hs-info-txt"><h2>${esc(t.name)}</h2><span class="meta">${[t.brand,T?.name&&norm(T.name)!==norm(t.name)?T.name:famOf(t.fam).name].filter(Boolean).map(esc).join(' · ')}</span>${t.origin||t.harvest?`<span class="meta">${[t.origin,t.harvest].filter(Boolean).map(esc).join(' · ')}</span>`:''}
+     <span class="hs-links"><button class="linkbtn" data-a="openTea" data-v="${esc(t.id)}">Tea page &amp; sessions</button><button class="linkbtn" data-a="editTea" data-v="${esc(t.id)}">Edit</button></span></div></div>
+    <div class="hs-card hs-heat" data-arr-item="heat" data-arr-label="Brews heatmap" data-mock="data.heatmap" data-mock-label="Brews"><h3>Brews</h3>${bs.length?heatmap(bs):'<p class="muted hs-note">No brews yet.</p>'}</div>
+    <div class="hs-card" data-arr-item="price" data-arr-label="Price vs. rating" data-mock="data.scatter" data-mock-label="Price vs. rating"><h3>Price vs. rating</h3>${priceRating(t)}</div>
+   </div>
+   <div class="hs-col" data-arr="shelf-side">
+    <div class="hs-card hs-stat" data-arr-item="strip" data-arr-label="Brews and days"><div class="hs-strip" data-mock="lay.stats" data-mock-label="${bs.length} brews, ${days??'—'} days since opened"><div><b>${bs.length}</b><span>brew${bs.length===1?'':'s'}</span></div><div><b>${days??'—'}</b><span>day${days===1?'':'s'} since opened</span></div></div></div>
+    <div class="hs-card hs-grow" data-arr-item="radar" data-arr-label="Flavour profile" data-mock="data.radar" data-mock-label="Flavour profile"><h3>Flavour profile</h3>${rated.length?`<div class="hs-radar">${radarSVG([{v:pal}],{size:200})}</div><span class="muted hs-note">Average of ${rated.length} rated brew${rated.length===1?'':'s'}</span>`:'<p class="muted hs-note">Rate the palate on a brew to see its shape here.</p>'}</div>
+    <div class="hs-card hs-gauge" data-arr-item="gauge" data-arr-label="Grams used">${k?gaugeSVG(k.used,k.total):`<div class="hs-nostock"><span class="muted">How much did you buy?</span><button class="linkbtn" data-a="editTea" data-v="${esc(t.id)}">Add the amount</button></div>`}</div>
+   </div>
   </div>`}
 function gaugeSVG(used,total){const p=clamp(used/total,0,1);const R=52,cx=64,cy=62;const a=Math.PI*(1-p);
   const x=cx+R*Math.cos(a),y=cy-R*Math.sin(a);
@@ -71,7 +75,6 @@ function priceRating(cur){
 function shelfGuide(t){const ms=methodsFor(t);const style=ms.some(m=>m.style===state.shelfStyle)?state.shelfStyle:defaultStyle(t);const r=prodFor(t,style)||recFor(t,style);
   return `<div class="hg">${ms.length>1?`<div class="seg sm" role="group" aria-label="Method">${ms.map(m=>`<button type="button" data-a="shelfStyle" data-v="${m.style}" aria-pressed="${m.style===style}">${STYLE[m.style]}</button>`).join('')}</div>`:''}
    <div class="hg-cols"><section><h3>Instructions</h3><ol class="bw-steps" data-mock="txt.numbered">${stepsFor(r).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></section>
-    <section><h3>Details${r.producer?` <span class="muted">· ${esc(t.brand||'producer')}’s recipe</span>`:''}</h3>${guideList(r)}</section></div>
-   <button class="btn primary" data-a="logFor" data-v="${esc(t.id)}">＋ Log a brew</button></div>`}
+    <section><h3>Details${r.producer?` <span class="muted">· ${esc(t.brand||'producer')}’s recipe</span>`:''}</h3>${guideList(r)}</section></div></div>`}
 const washOf = liqs=>`linear-gradient(100deg,${liqs.map(liqHex).join(',')})`;
 function paramLine(b){return [b.g?`${b.g} g`:null,b.ml?`${b.ml} ml`:null,fmtT(b.temp,b.style),`${STYLE[b.style]||''}${(b.steeps||[]).length>1?' ×'+b.steeps.length:''}`].filter(Boolean).join(' · ')}
