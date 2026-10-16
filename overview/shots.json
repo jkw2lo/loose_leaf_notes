@@ -1,0 +1,76 @@
+{
+  "url": "https://jkw2lo.github.io/loose_leaf_notes/",
+  "shots": [
+    {
+      "file": "desktop.png",
+      "steps": [
+        "eval:/* the repo's sample journal (examples/sample-data.json), restored the way Settings does */ const d = await (await fetch('examples/sample-data.json')).json(); for (const t of d.teas) await store.saveTea(t); for (const b of d.sessions) await store.saveBrew(b);",
+        "reload",
+        "wait:800"
+      ]
+    },
+    {
+      "file": "teapage.jpg",
+      "size": [
+        1440,
+        1200
+      ],
+      "scale": 2,
+      "steps": [
+        "eval:/* the repo's sample journal (examples/sample-data.json), restored the way Settings does */ const d = await (await fetch('examples/sample-data.json')).json(); for (const t of d.teas) await store.saveTea(t); for (const b of d.sessions) await store.saveBrew(b);",
+        "reload",
+        "wait:800",
+        "eval:{ const b = [...document.querySelectorAll('button, a, [role=tab]')].find(b => b.offsetParent && b.textContent.trim().replace(/\\s+/g,' ').startsWith(\"Tea page & sessions\")); if (b) b.click(); }",
+        "wait:1000"
+      ],
+      "region": [
+        180,
+        150,
+        1090,
+        860
+      ]
+    },
+    {
+      "file": "insights.png",
+      "size": [
+        1440,
+        1200
+      ],
+      "scale": 2,
+      "steps": [
+        "eval:/* the repo's sample journal (examples/sample-data.json), restored the way Settings does */ const d = await (await fetch('examples/sample-data.json')).json(); for (const t of d.teas) await store.saveTea(t); for (const b of d.sessions) await store.saveBrew(b);",
+        "reload",
+        "wait:800",
+        "eval:{ const b = [...document.querySelectorAll('button, a, [role=tab]')].find(b => b.offsetParent && b.textContent.trim().replace(/\\s+/g,' ').startsWith(\"Insights\")); if (b) b.click(); }",
+        "wait:1000"
+      ],
+      "region": [
+        180,
+        290,
+        1090,
+        960
+      ]
+    },
+    {
+      "file": "guides.jpg",
+      "size": [
+        1440,
+        1200
+      ],
+      "scale": 2,
+      "steps": [
+        "eval:/* the repo's sample journal (examples/sample-data.json), restored the way Settings does */ const d = await (await fetch('examples/sample-data.json')).json(); for (const t of d.teas) await store.saveTea(t); for (const b of d.sessions) await store.saveBrew(b);",
+        "reload",
+        "wait:800",
+        "eval:{ const b = [...document.querySelectorAll('button, a, [role=tab]')].find(b => b.offsetParent && b.textContent.trim().replace(/\\s+/g,' ').startsWith(\"Guides\")); if (b) b.click(); }",
+        "wait:1000"
+      ],
+      "region": [
+        180,
+        150,
+        1090,
+        820
+      ]
+    }
+  ]
+}

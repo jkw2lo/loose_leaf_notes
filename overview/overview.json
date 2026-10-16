@@ -1,0 +1,40 @@
+{
+  "version": 3,
+  "name": "Loose Leaf Notes",
+  "tagline": "A tea journal",
+  "pitch": "Keep a shelf of the teas you own, brew each against a guide written for it, and taste every infusion.",
+  "accent": "#2f6b4f",
+  "status": "Live",
+
+  "problem": "Every tea brews differently, and the packet rarely says how.",
+  "stats": [
+    { "value": "115", "label": "tea types, each with its own guide" },
+    { "value": "16", "label": "families, from Japanese green to pu'er" },
+    { "value": "226", "label": "tea brands it already knows" }
+  ],
+
+  "features": [
+    { "title": "A guide for every tea", "text": "Each guide lists only the methods traditionally used for that tea.",
+      "details": ["Sencha gets kyusu and cold brew; matcha, usucha and koicha", "Teaware, leaf, water, temperature and infusions", "Edit any guide to set your own baseline"],
+      "screen": { "src": "guides.jpg", "alt": "The brewing guide for Xī Hú Lóng Jǐng: gongfu, western pot, glass and cold brew, with temperature, leaf, water and steep times" } },
+    { "title": "Brew it, then taste it", "text": "Log a session: set up, steep with a timer, then score each infusion.",
+      "details": ["Liquor colour, flavours and a note for every infusion", "Compare with the packet's own recipe"],
+      "screen": { "src": "teapage.jpg", "alt": "Ròu Guì's page: a Wuyi rock oolong with its brewing guide (gaiwan, 7–8 g, 100 ml, 98–100°C, seven to nine infusions) and details" } },
+    { "title": "What your best cups share", "text": "Insights chart what your highest-rated sessions have in common.",
+      "details": ["Rating by water temperature, leaf, infusions and steep time", "The palate of your favourites against the rest"],
+      "screen": { "src": "insights.png", "alt": "Insights: average rating by tea family, a palate chart of favourite sessions, and ratings plotted against water temperature" } },
+    { "title": "Finished, not forgotten", "text": "A finished tea moves to the library with a final score and a note.",
+      "details": ["Would you buy it again?", "Rearrange any page's layout to suit you"] }
+  ],
+
+  "screens": [
+    { "src": "desktop.png", "alt": "The tea shelf: six teas from gyokuro to Yiwu pu'er, filters by family, and Ròu Guì's stats and flavour profile", "caption": "The shelf, with a sample journal" }
+  ],
+
+  "facts": {
+    "worksOn": "Desktop browsers",
+    "data": "Saved in your browser",
+    "builtWith": "Plain HTML, CSS and JS",
+    "started": "Oct 2026"
+  }
+}
