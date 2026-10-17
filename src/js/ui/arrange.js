@@ -25,7 +25,7 @@
      screens: [{name, show}], Every screen, for "Export all pages"; show() may be async.
      before(), restore(),     Called before and after exporting every page, to note and put back where you were.
      canExport(),             Return a message to block "Export all pages" (for example, unsaved work).
-     shortcut: 'e'            Key that toggles arrange mode (ignored while typing).
+     shortcut: 'e'            Key that toggles arrange mode (ignored while typing or in a list).
    })
    Exports are UI Field Guide mockup files ({app, version, name, screens:[{sid, name, frame, notes, els, base}]}): open
    them with Open → Open a file. Widths are scaled to the tool's frame (1280 desktop, 834 tablet, 390 mobile). Each screen
@@ -133,8 +133,8 @@ function onClick(ev){if(!S.on)return;const b=ev.target.closest('[data-arr-act]')
 function onDbl(ev){if(!S.on)return;const g=ev.target.closest('.arr-w,.arr-hg');if(!g)return;ev.preventDefault();ev.stopPropagation();const item=g.closest('[data-arr-item]'),c=item.parentElement;
   const map=g.classList.contains('arr-hg')?'h':c.hasAttribute('data-arr-grid')?'span':'wd';setMap(c.dataset.arr,map,item.dataset.arrItem,null)}
 function onKey(ev){const t=ev.target;
-  if(!S.on){if(S.o.shortcut&&ev.key===S.o.shortcut&&!ev.metaKey&&!ev.ctrlKey&&!ev.altKey&&!t.closest?.('input,textarea,select,[contenteditable]'))toggle(true);return}
-  if(ev.key==='Escape'||(ev.key===S.o.shortcut&&!t.closest?.('input,textarea,select,[contenteditable]'))){ev.preventDefault();ev.stopPropagation();toggle(false);return}
+  if(!S.on){if(S.o.shortcut&&ev.key===S.o.shortcut&&!ev.metaKey&&!ev.ctrlKey&&!ev.altKey&&!t.closest?.('input,textarea,select,[contenteditable],[role=listbox]'))toggle(true);return}
+  if(ev.key==='Escape'||(ev.key===S.o.shortcut&&!t.closest?.('input,textarea,select,[contenteditable],[role=listbox]'))){ev.preventDefault();ev.stopPropagation();toggle(false);return}
   if(t.classList?.contains('arr-split')){const c=t.parentElement,key=c.dataset.arrSplit;const {cols}=gridCols(c);const f=c.dataset.arrFixed==='2'?2:1;const w=f===1?cols[0]:cols[cols.length-1];
     if(ev.key==='Home'){ev.preventDefault();setUser(key,{w:undefined});return}
     const d={ArrowLeft:-10,ArrowRight:10}[ev.key];if(d){ev.preventDefault();setUser(key,{w:Math.round(clamp(w+(f===1?d:-d),+c.dataset.arrMin||160,+c.dataset.arrMax||800))})}return}

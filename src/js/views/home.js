@@ -25,16 +25,11 @@ function renderHome(){
   if(store.mode==='pending'){el.innerHTML='<p class="loading">Opening your notes…</p>';return}
   const t=hbTea(),style=hbStyle(t),w=hbVessel(t,style),g=hbG(t,style,w),on=!!S?.home;
   const shelf=hbShelf(),lib=allTeas().filter(x=>x.finished),own=store.settings.vessels;
-  const opt=x=>`<option value="${esc(x.id)}" ${t?.id===x.id?'selected':''}>${esc(x.name)}${x.brand?' – '+esc(x.brand):''}</option>`;
   el.innerHTML=`<h1 class="sr">Brew today</h1>
    <div class="hb-top" data-arr-item="setup" data-arr-label="Tea, teaware and leaf">
-    <label class="hb-sel" data-mock="sel.select" data-mock-label="What's brewing today?"><span class="sr">Tea</span><select class="input" id="hb-tea">
-     <option value="" disabled ${t?'':'selected'}>What's brewing today?</option>
-     ${shelf.length?`<optgroup label="On your shelf">${shelf.map(opt).join('')}</optgroup>`:''}
-     ${lib.length?`<optgroup label="Finished, in your library">${lib.map(opt).join('')}</optgroup>`:''}
-     <option value="__new">＋ Add new tea</option></select></label>
+    ${hbTeaMenu(t,shelf,lib)}
     ${hbWareSeg(w)}
-    <div class="hb-step" role="group" aria-label="Leaf" data-mock="in.number" data-mock-label="${g}g"><button type="button" data-a="hbG" data-v="-1" aria-label="One gram less">−</button><span class="hb-step-v"><input id="hb-g" inputmode="decimal" value="${g}" aria-label="Leaf in grams"><b>g</b></span><button type="button" data-a="hbG" data-v="1" aria-label="One gram more">+</button></div>
+    <div class="hb-step" role="group" aria-label="Leaf" data-mock="in.number" data-mock-label="${g}g"><button type="button" data-a="hbG" data-v="-1" aria-label="One gram less">−</button><span class="hb-step-v"><input id="hb-g" inputmode="decimal" value="${g}" style="width:${hbGW(g)}" aria-label="Leaf in grams"><b>g</b></span><button type="button" data-a="hbG" data-v="1" aria-label="One gram more">+</button></div>
     ${on?`<button type="button" class="btn primary hb-go" data-a="saveSession" data-mock="act.button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Add to log</button>`
      :`<button type="button" class="btn primary hb-go" data-a="hbStart" data-mock="act.button" ${t?'':'disabled'}>Start brewing</button>`}
    </div>
@@ -62,6 +57,33 @@ function hbWareSeg(w){const own=hbWareOrder();
   const slots=Math.min(HB_WARE_PER,own.length),cols=`${pages>1?'26px ':''}repeat(${slots},minmax(0,1fr))${pages>1?' 26px':''}`;
   return `<div class="seg hb-ware" role="group" style="--cols:${cols}" aria-label="Teaware${pages>1?`, page ${p+1} of ${pages}`:''}" data-mock="sel.segmented" data-mock-label="${esc(shown.map(x=>x.name).join(', '))}">${pages>1?arrow(-1,'Previous teaware'):''}${shown.map(x=>`<button type="button" data-a="hbWare" data-v="${esc(x.id)}" aria-pressed="${w?.id===x.id}" title="${esc(x.name)}">${esc(x.name)}</button>`).join('')}${'<span aria-hidden="true"></span>'.repeat(slots-shown.length)}${pages>1?arrow(1,'More teaware'):''}</div>`}
 const hbWareRedraw = ()=>{const el=$('.hb-ware');const t=hbTea();if(el)el.outerHTML=hbWareSeg(hbVessel(t,hbStyle(t)))};
+/* the tea picker: a button that opens a list below it (a native select pops up over itself on macOS) */
+function hbTeaMenu(t,shelf,lib){
+  const opt=x=>`<button type="button" class="hb-opt" role="option" data-a="hbTeaPick" data-v="${esc(x.id)}" aria-selected="${t?.id===x.id}" tabindex="-1"><span class="cup sm" style="--liq:${liqHex(teaLiq(x))}"></span><span class="hb-opt-t"><b>${esc(x.name)}</b>${x.brand?`<small>${esc(x.brand)}</small>`:''}</span></button>`;
+  const grp=(id,lab,xs)=>xs.length?`<div role="group" aria-labelledby="hbg-${id}"><span class="hb-grp" id="hbg-${id}">${lab}</span>${xs.map(opt).join('')}</div>`:'';
+  return `<div class="hb-sel" id="hb-sel" data-mock="sel.select" data-mock-label="What's brewing today?">
+   <button type="button" class="input hb-sel-btn" id="hb-tea" data-a="hbTeaOpen" aria-haspopup="listbox" aria-expanded="false" aria-controls="hb-tea-list" aria-label="Tea${t?': '+esc(t.name):''}">${t?`<span class="cup sm" style="--liq:${liqHex(teaLiq(t))}"></span><span class="hb-sel-t">${esc(t.name)}${t.brand?`<small> – ${esc(t.brand)}</small>`:''}</span>`:`<span class="hb-sel-t muted">What's brewing today?</span>`}</button>
+   <div class="hb-menu" id="hb-tea-list" role="listbox" aria-label="Teas" hidden>${grp('shelf','On your shelf',shelf)}${grp('lib','Finished, in your library',lib)}
+    <button type="button" class="hb-opt hb-new" role="option" data-a="hbTeaPick" data-v="__new" aria-selected="false" tabindex="-1">＋ Add new tea</button></div></div>`}
+const hbMenuOpts = ()=>$$('#hb-tea-list .hb-opt');
+function hbMenu(open,focus){const m=$('#hb-tea-list'),b=$('#hb-tea');if(!m||!b)return;m.hidden=!open;b.setAttribute('aria-expanded',open);
+  if(open){const os=hbMenuOpts();const cur=os.find(o=>o.getAttribute('aria-selected')==='true')||os[0];cur?.focus({preventScroll:true});cur?.scrollIntoView({block:'nearest'})}else if(focus)b.focus()}
+function hbTeaPick(v){hbMenu(false,true);
+  if(v===(S?.home?S.teaId:hbTea()?.id))return;
+  if(S?.home&&brewDirty()){toast(HB_BUSY);return}
+  if(v==='__new'){openTeaForm({then:'home'});return}
+  hbPickTea(v);$('#hb-tea')?.focus()}
+document.addEventListener('click',e=>{if(!e.target.closest('#hb-sel'))hbMenu(false)});
+document.addEventListener('keydown',e=>{const t=e.target;if(!t.closest?.('#hb-sel'))return;const m=$('#hb-tea-list');const open=m&&!m.hidden;
+  if(t.id==='hb-tea'&&!open&&['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();hbMenu(true);return}
+  if(!open)return;const os=hbMenuOpts(),i=os.indexOf(document.activeElement);
+  const go=n=>{e.preventDefault();os[clamp(n,0,os.length-1)]?.focus()};
+  if(e.key==='ArrowDown')return go(i+1);if(e.key==='ArrowUp')return go(i-1);if(e.key==='Home')return go(0);if(e.key==='End')return go(os.length-1);
+  if(e.key==='Escape'){e.preventDefault();e.stopPropagation();hbMenu(false,true);return}
+  if(e.key==='Tab'){hbMenu(false);return}
+  // type a letter to jump to the next tea starting with it
+  if(e.key.length===1&&/\S/.test(e.key)){const k=norm(e.key);const n=os.findIndex((o,j)=>j>i&&norm(o.textContent).startsWith(k));const f=n>=0?n:os.findIndex(o=>norm(o.textContent).startsWith(k));if(f>=0)go(f)}});
+const hbGW = g=>Math.max(1,String(g).length)+.5+'ch';
 function hbIdleTimer(){return `<div class="tm-read" role="timer" aria-label="Steep timer"><span class="tm-time">0:00</span><span class="tm-sub">start brewing to time each steep</span></div><span class="tm-bar" aria-hidden="true"><i style="width:0"></i></span>`}
 function hbHint(t,style){const r=prodFor(t,style)||recFor(t,style);const ms=methodsFor(t);const u=style==='ice'?'g':'ml';
   const meth=ms.length>1&&!S?.home?`<span class="seg sm" role="group" aria-label="Method">${ms.map(m=>`<button type="button" data-a="hbStyle" data-v="${m.style}" aria-pressed="${m.style===style}">${STYLE[m.style]}</button>`).join('')}</span>`:`<b>${esc(STYLE[style]||style)}</b>`;
@@ -145,12 +167,14 @@ const HB_BUSY='Add this brew to your log, or discard it, before switching teas.'
 function homeAction(a,v,el){
   switch(a){
    case 'hbStart':hbStart();return true;
+   case 'hbTeaOpen':hbMenu($('#hb-tea-list')?.hidden);return true;
+   case 'hbTeaPick':hbTeaPick(v);return true;
    case 'hbWare':{const w=store.settings.vessels.find(x=>x.id===v);if(!w)return true;H.vesselId=v;H.style=null;
      if(S?.home){S.vesselId=w.id;S.vesselType=w.type;S.vesselName=w.name;if(!S.touched.has('ml')&&w.ml&&HB_SIZED.includes(S.style))S.steeps.forEach(b=>b.ml=w.ml);hbWareRedraw();hbRerow()}
      else{if(!H.gTouched)H.g=null;renderHome()}return true}
    case 'hbWarePg':H.warePage=(H.warePage||0)+(+v);hbWareRedraw();$(`.hb-ware [data-v="${v}"]`)?.focus();return true;
    case 'hbStyle':H.style=v;if(!H.gTouched)H.g=null;renderHome();return true;
-   case 'hbG':{const i=$('#hb-g');const n=Math.max(1,Math.round((parseFloat(i.value)||0)+(+v)));i.value=n;hbSetG(n);return true}
+   case 'hbG':{const i=$('#hb-g');const n=Math.max(1,Math.round((parseFloat(i.value)||0)+(+v)));i.value=n;i.style.width=hbGW(n);hbSetG(n);return true}
    case 'hbStep':{const[k,key,d]=v.split(':');const b=S.steeps[+k];const cur=b[key]??sRec().target;hbSet(+k,key,cur+(+d)*fineStep(key,cur,+d));return true}
    case 'hbTime':{const k=+v;S.cur=k;tReset(k);tStart();hbTimeBtns();if(innerWidth>720)$('#bw-timer')?.scrollIntoView({block:'nearest',behavior:'smooth'});return true}
    case 'brewNext':if(T.brew+1<S.steeps.length){tReset(T.brew+1);rTimer()}else hbAdd();return true;
@@ -167,7 +191,7 @@ function homeAction(a,v,el){
 function hbSetG(n){if(S?.home){S.g=Math.max(0,n);S.touched.add('g');hbAllBands()}else{H.g=n;H.gTouched=true}}
 function hbAddTag(k){const inp=$('#hb-ctag-'+k);const val=inp.value.trim().toLowerCase();if(!val)return;const b=S.steeps[k];b.tags=b.tags||[];if(!b.tags.includes(val))b.tags.push(val);hbRerender(k);setTimeout(()=>$('#hb-ctag-'+k)?.focus(),0)}
 function homeInput(t){
-  if(t.id==='hb-g'){const n=parseFloat(t.value);if(!isNaN(n))hbSetG(n);return true}
+  if(t.id==='hb-g'){t.style.width=hbGW(t.value);const n=parseFloat(t.value);if(!isNaN(n))hbSetG(n);return true}
   const key=t.dataset.hk;if(!key||!S?.home)return false;const k=+t.dataset.k,b=S.steeps[k];
   if(key==='note'){b.note=t.value;return true}
   if(key==='ctag')return true;
@@ -175,10 +199,6 @@ function homeInput(t){
   if(key==='axis'){const x=t.dataset.axis;b.axes={...blankAxes(),...b.axes,[x]:+t.value};$(`#hbao-${x}-${k}`).textContent=t.value==='0'?'–':t.value;$('#hbr-'+k).innerHTML=radarSVG([{v:b.axes}],{size:150});return true}
   hbSet(k,key,key==='s'?timeVals()[+t.value]:+t.value,true);return true}
 function homeChange(t){
-  if(t.id==='hb-tea'){const v=t.value;
-    if(S?.home&&brewDirty()){t.value=S.teaId;toast(HB_BUSY);return true}
-    if(v==='__new'){t.value=hbTea()?.id||'';openTeaForm({then:'home'});return true}
-    hbPickTea(v);return true}
-  if(t.id==='hb-g'){t.value=S?.home?S.g:H.g??t.value;return true}
+  if(t.id==='hb-g'){t.value=S?.home?S.g:H.g??t.value;t.style.width=hbGW(t.value);return true}
   return false}
 document.addEventListener('toggle',e=>{const d=e.target;if(d.classList?.contains('hb-pal')&&S?.home){const k=+d.dataset.k;d.open?S.palOpen.add(k):S.palOpen.delete(k)}},true);
