@@ -58,7 +58,9 @@ function hbWareSeg(w){const own=hbWareOrder();
   if(H.warePage==null){const i=own.findIndex(x=>x.id===w?.id);H.warePage=i>=0?Math.floor(i/HB_WARE_PER):0}
   const p=H.warePage=clamp(H.warePage,0,pages-1);const shown=own.slice(p*HB_WARE_PER,(p+1)*HB_WARE_PER);
   const arrow=(d,lab)=>`<button type="button" class="hb-ware-pg" data-a="hbWarePg" data-v="${d}" aria-label="${lab}" ${p+d<0||p+d>=pages?'disabled':''}>${d<0?'‹':'›'}</button>`;
-  return `<div class="seg hb-ware" role="group" aria-label="Teaware${pages>1?`, page ${p+1} of ${pages}`:''}" data-mock="sel.segmented" data-mock-label="${esc(shown.map(x=>x.name).join(', '))}">${pages>1?arrow(-1,'Previous teaware'):''}${shown.map(x=>`<button type="button" data-a="hbWare" data-v="${esc(x.id)}" aria-pressed="${w?.id===x.id}">${esc(x.name)}</button>`).join('')}${pages>1?arrow(1,'More teaware'):''}</div>`}
+  // fixed slots so every piece is the same width, even on a last page with fewer
+  const slots=Math.min(HB_WARE_PER,own.length),cols=`${pages>1?'26px ':''}repeat(${slots},minmax(0,1fr))${pages>1?' 26px':''}`;
+  return `<div class="seg hb-ware" role="group" style="--cols:${cols}" aria-label="Teaware${pages>1?`, page ${p+1} of ${pages}`:''}" data-mock="sel.segmented" data-mock-label="${esc(shown.map(x=>x.name).join(', '))}">${pages>1?arrow(-1,'Previous teaware'):''}${shown.map(x=>`<button type="button" data-a="hbWare" data-v="${esc(x.id)}" aria-pressed="${w?.id===x.id}" title="${esc(x.name)}">${esc(x.name)}</button>`).join('')}${'<span aria-hidden="true"></span>'.repeat(slots-shown.length)}${pages>1?arrow(1,'More teaware'):''}</div>`}
 const hbWareRedraw = ()=>{const el=$('.hb-ware');const t=hbTea();if(el)el.outerHTML=hbWareSeg(hbVessel(t,hbStyle(t)))};
 function hbIdleTimer(){return `<div class="tm-read" role="timer" aria-label="Steep timer"><span class="tm-time">0:00</span><span class="tm-sub">start brewing to time each steep</span></div><span class="tm-bar" aria-hidden="true"><i style="width:0"></i></span>`}
 function hbHint(t,style){const r=prodFor(t,style)||recFor(t,style);const ms=methodsFor(t);const u=style==='ice'?'g':'ml';
