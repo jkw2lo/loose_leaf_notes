@@ -12,9 +12,9 @@ It runs entirely in the browser with no build step and no dependencies. It can a
 - **Producer's recipe.** Record the brewing instructions on the packet and compare them with the typical guide.
 - **Sessions.** Log a brew in three steps: setup, steep and how it was. A built-in timer chimes when an infusion is done, and each infusion can have its own liquor colour, score, flavours and note.
 - **Comparison.** Each tea shows your sessions charted against the guide: steep curves, deviations in leaf, temperature and infusions, and palate overlays.
-- **Library.** Finished teas move to a library with a final score, a "would you buy it again" answer and a parting note, with every session still available.
-- **Journal and insights.** Sessions by date, plus what correlates with your best-rated cups.
-- **Brew today home page.** An optional home page (Settings → Home page) for brewing straight away: pick a tea (or add a new one), your teaware and grams of leaf, then Start brewing. Each infusion is a card with volume, temperature and time, its own Start timer for the shared timer, and its score, liquor colour, flavours, comments and palate. The tea shelf stays under Teas.
+- **Library.** One tab for looking back, in two sections you can fold away: the **Journal** (every session by date) and **Teas** (in rotation, then finished teas with a final score, a "would you buy it again" answer and a parting note).
+- **Insights.** What correlates with your best-rated cups.
+- **Brew today.** The default home page (**Brew** in the menu, beside **Teas** for the tea shelf; Settings → Home page picks which opens first), for brewing straight away: pick a tea (or add a new one), your teaware and grams of leaf, then Start brewing. Each infusion is a card with volume, temperature and time, its own Start timer for the shared timer, and its score, liquor colour, flavours, comments and palate.
 - **Settings.** Your home page, your teaware (only these appear when logging), temperature input style (dial, steps, scale or typed), °C/°F, your own tea types, export and restore.
 
 ## Arrange mode and mockup export

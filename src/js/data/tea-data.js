@@ -267,5 +267,5 @@ const TEMP_MODES = [
  ['scale','Scale','Tap a temperature from 0 to 100°C in 5° steps.'],
  ['type','Type','Type the exact number.']
 ];
-const DEFAULT_SETTINGS = {tempMode:'dial',unit:'C',homeLayout:'shelf',customTypes:[],vessels:[
+const DEFAULT_SETTINGS = {tempMode:'dial',unit:'C',homeLayout:'brew',customTypes:[],vessels:[
  {id:'w1',type:'gaiwan',name:'Gaiwan',ml:100},{id:'w2',type:'kyusu',name:'Kyusu',ml:250},{id:'w3',type:'porcelain',name:'Porcelain teapot',ml:450},{id:'w4',type:'glass',name:'Glass teapot',ml:500},{id:'w5',type:'mug',name:'Mug & infuser',ml:350}]};

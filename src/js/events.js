@@ -34,8 +34,9 @@ document.addEventListener('click',async e=>{
    case 'finScore':FIN.score=FIN.score===+v?0:+v;$('#fin-score').innerHTML=finScoreHTML();return;
    case 'finRebuy':FIN.rebuy=FIN.rebuy===v?'':v;$('#fin-rebuy').innerHTML=finRebuyHTML();return;
    case 'saveFinish':saveFinish();return;
-   case 'libFam':state.libFam=state.libFam===v?'':v;renderLibrary();return;
-   case 'libClear':state.libQ='';state.libFam='';state.libRebuy='';renderLibrary();return;
+   case 'libFam':state.libFam=state.libFam===v?'':v;renderLibBody();return;
+   case 'libClear':state.libQ='';state.libFam='';state.libRebuy='';renderLibBody();return;
+   case 'fold':{const open=state.folds[v]===false;state.folds[v]=open;LS.set('lln-folds',state.folds);el.setAttribute('aria-expanded',open);const b=$('#'+v+'Body');b.hidden=!open;if(open)v==='journal'?renderJournal():renderLibBody();return}
    case 'gSel':state.gSel=v;renderGuide();if(innerWidth<900)$('.gdetail')?.scrollIntoView({block:'start',behavior:'smooth'});return;
    case 'gStyle':state.gStyle=v;renderGuide();return;
    case 'gReset':{const all={...(store.settings.guideOverrides||{})};delete all[state.gSel+'|'+state.gStyle];store.setSettings({guideOverrides:all});renderGuide();toast('Guide reset to default');return}
@@ -70,7 +71,7 @@ document.addEventListener('input',e=>{
   if(t.dataset.combo){if(TF&&t.dataset.combo!=='type'){TF[t.dataset.combo]=t.value;const n=$('#tf-'+t.dataset.combo+'-note');if(n)n.innerHTML=validNote(t.dataset.combo,t.value)}renderCombo(t);return}
   if(t.id==='jq'){state.jq=t.value;clearTimeout(renderJournal._t);renderJournal._t=setTimeout(renderJournal,120);return}
   if(t.id==='pickQ'){renderPickList();return}
-  if(t.id==='libQ'){state.libQ=t.value;clearTimeout(renderLibrary._t);renderLibrary._t=setTimeout(renderLibrary,120);return}
+  if(t.id==='libQ'){state.libQ=t.value;clearTimeout(renderLibBody._t);renderLibBody._t=setTimeout(renderLibBody,120);return}
   if(t.id==='gq'){state.gq=t.value;$('#glItems').innerHTML=guideListHTML();return}
   if(setupInput(t))return;
   if(t.dataset.w){const id=t.dataset.id;store.setSettings({vessels:store.settings.vessels.map(x=>x.id===id?{...x,[t.dataset.w]:t.dataset.w==='ml'?(parseInt(t.value)||0):t.value}:x)});return}
@@ -82,8 +83,8 @@ document.addEventListener('focusin',e=>{const t=e.target;if(t.dataset?.combo==='
 document.addEventListener('change',e=>{
   const t=e.target;
   if(t.id==='jmin'){state.jmin=+t.value;renderJournal();return}
-  if(t.id==='libRebuy'){state.libRebuy=t.value;renderLibrary();return}
-  if(t.id==='libSort'){state.libSort=t.value;renderLibrary();return}
+  if(t.id==='libRebuy'){state.libRebuy=t.value;renderLibBody();return}
+  if(t.id==='libSort'){state.libSort=t.value;renderLibBody();return}
   if(t.dataset.ge!=null){commitGuide();return}
   if(t.dataset.ct==='fam'){t.dispatchEvent(new Event('input',{bubbles:true}));return}
   if(t.id==='importFile'){const f=t.files?.[0];if(f)importBackup(f);t.value='';return}

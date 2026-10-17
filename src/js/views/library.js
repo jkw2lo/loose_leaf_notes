@@ -21,8 +21,19 @@ const monthYear = iso=>iso?dt(iso).toLocaleDateString(undefined,{month:'short',y
 /* the narrow metrics column beside Library and Journal */
 const rail = (key,items)=>{items=items.filter(Boolean);return `<aside class="rail" aria-label="Metrics" data-arr="${key}" data-mock="lay.stats" data-mock-label="${esc(items.map(([v,l])=>`${String(v).replace(/<[^>]+>/g,'')} ${l}`).join(', '))}">${items.map(([v,l])=>`<div class="rail-stat" data-arr-item="${norm(l.replace(/[·\d].*$/,''))}" data-arr-label="${esc(l)}"><b>${v}</b><span>${l}</span></div>`).join('')}</aside>`};
 function spentStr(teas){const by={};teas.forEach(t=>{const k=stockOf(t);if(k?.price)by[k.cur]=(by[k.cur]||0)+k.price});const e=Object.entries(by);return e.length?e.map(([c,n])=>money(n,c)).join(' + '):null}
+/* the Library tab: your journal of sessions and your library of teas, each a section you can fold away */
 function renderLibrary(){
   const el=$('#view-library');if(store.mode==='pending'){el.innerHTML='<p class="loading">Opening your notes…</p>';return}
+  const nb=store.brews.length,nt=allTeas().length;
+  const fold=(id,title,sub,count)=>{const open=state.folds[id]!==false;
+    return `<section class="fold" id="fold-${id}" data-arr-item="${id}" data-arr-label="${title}"><h2 class="fold-h"><button type="button" class="fold-btn" data-a="fold" data-v="${id}" aria-expanded="${open}" aria-controls="${id}Body"><span class="fold-chev" aria-hidden="true"></span><span class="fold-t">${title}</span><span class="count">${count}</span><span class="fold-sub muted">${sub}</span></button></h2><div class="fold-body" id="${id}Body" ${open?'':'hidden'}></div></section>`};
+  el.innerHTML=`<div class="page-head"><div><h1>Library</h1><p>Everything you’ve brewed and every tea you’ve kept notes on, in one place.</p></div></div>
+   ${fold('journal','Journal','Every session, newest first',`${nb} session${nb===1?'':'s'}`)}
+   ${fold('library','Teas','In rotation, then finished',`${nt} tea${nt===1?'':'s'}`)}`;
+  if(state.folds.journal!==false)renderJournal();if(state.folds.library!==false)renderLibBody();
+}
+function renderLibBody(){
+  const el=$('#libraryBody');if(!el||store.mode==='pending')return;
   const all=allTeas();const q=norm(state.libQ);
   const focused=document.activeElement?.id==='libQ';const caret=focused?document.activeElement.selectionStart:0;
   const list=all.map(t=>({t,s:teaSummary(t)})).filter(({t})=>(!q||norm([t.name,t.brand,t.origin,t.harvest,typeOf(t)?.name,famOf(t.fam).name,t.verdict?.note].join(' ')).includes(q))&&(!state.libFam||t.fam===state.libFam)&&(!state.libRebuy||t.verdict?.rebuy===state.libRebuy));
@@ -34,8 +45,7 @@ function renderLibrary(){
   const nFin=all.filter(t=>t.finished).length,grams=store.brews.reduce((a,b)=>a+(+b.g||0),0),rebuyN=all.filter(t=>t.verdict?.rebuy==='yes').length,spent=spentStr(all);
   const rated=all.map(t=>teaSummary(t).score).filter(Boolean);
   const sec=(id,title,items,note)=>items.length?`<section class="lib-sec" data-arr-item="${id}" data-arr-label="${title}"><div class="lib-sec-head"><h2>${title}</h2><span class="count">${items.length}</span>${note?`<span class="muted">${note}</span>`:''}</div><div class="libgrid" data-mock="lay.grid" data-mock-label="${esc(title+': '+items.map(x=>x.t.name).join(', '))}">${items.map(libCard).join('')}</div></section>`:'';
-  el.innerHTML=`<div class="page-head"><div><h1>Library</h1><p>Every tea you have kept notes on: the ones in rotation, then the ones you have finished.</p></div></div>
-  ${!all.length?`<div class="empty"><h2>Your library is empty</h2><p>Teas you add appear here, and stay with their sessions and verdict after you finish them.</p><button class="btn primary" data-a="newTea">＋ Add a tea</button></div>`:`
+  el.innerHTML=`${!all.length?`<div class="empty"><h2>Your library is empty</h2><p>Teas you add appear here, and stay with their sessions and verdict after you finish them.</p><button class="btn primary" data-a="newTea">＋ Add a tea</button></div>`:`
   ${famChips(counts,id=>state.libFam===id,'libFam',!state.libFam)}
   <div class="with-rail" data-arr-split="library" data-arr-fixed="2" data-arr-min="140" data-arr-max="360"><div class="rail-main">
    <div class="tool-row lib-tools"><label class="search">${searchIcon}<input id="libQ" type="search" placeholder="Search name, brand, origin, verdict" value="${esc(state.libQ)}" aria-label="Search library"></label>

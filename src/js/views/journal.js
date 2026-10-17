@@ -1,6 +1,6 @@
-/* ═════════ Journal (by date) ═════════ */
+/* ═════════ Journal (by date): the first section of the Library tab ═════════ */
 function renderJournal(){
-  const el=$('#view-journal');if(store.mode==='pending'){el.innerHTML='<p class="loading">Opening your notes…</p>';return}
+  const el=$('#journalBody');if(!el||store.mode==='pending')return;
   const all=store.brews;const q=norm(state.jq);
   const focused=document.activeElement?.id==='jq';const caret=focused?document.activeElement.selectionStart:0;
   const list=all.filter(b=>{const t=teaById(b.teaId);return(!q||norm([t?.name,t?.brand,t?.origin,b.notes,sessionTags(b).join(' '),famOf(t?.fam).name].join(' ')).includes(q))&&(!state.jcats.size||state.jcats.has(t?.fam))&&(!state.jmin||(b.rating||0)>=state.jmin)}).sort((a,b)=>dt(b.at)-dt(a.at));
@@ -8,8 +8,7 @@ function renderJournal(){
   const groups=[];list.forEach(b=>{const k=dt(b.at).toLocaleDateString(undefined,{month:'long',year:'numeric'});if(!groups.length||groups[groups.length-1].k!==k)groups.push({k,items:[]});groups[groups.length-1].items.push(b)});
   const now=new Date(),mk=d=>d.getFullYear()*12+d.getMonth();const thisMonth=all.filter(b=>mk(dt(b.at))===mk(now)).length;
   const rated=all.filter(b=>b.rating);const top=Object.entries(all.reduce((m,b)=>(m[b.teaId]=(m[b.teaId]||0)+1,m),{})).sort((a,b)=>b[1]-a[1])[0];
-  el.innerHTML=`<div class="page-head"><div><h1>Journal</h1><p>Every session in the order you brewed it.</p></div></div>
-   ${all.length?famChips(counts,id=>state.jcats.has(id),'jcat',!state.jcats.size):''}
+  el.innerHTML=`${all.length?famChips(counts,id=>state.jcats.has(id),'jcat',!state.jcats.size):''}
    ${!all.length?`<div class="empty"><h2>No sessions yet</h2><p>Sessions you log under your teas appear here by date.</p><button class="btn primary" data-a="newSession">＋ Log a session</button></div>`:`
    <div class="with-rail" data-arr-split="journal" data-arr-fixed="2" data-arr-min="140" data-arr-max="360"><div class="rail-main">
     <div class="tool-row lib-tools"><label class="search">${searchIcon}<input id="jq" type="search" placeholder="Search tea, brand, flavours, notes" value="${esc(state.jq)}" aria-label="Search sessions"></label>

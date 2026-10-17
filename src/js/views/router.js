@@ -1,7 +1,9 @@
 /* ═════════ View switching ═════════ */
 function setView(v,opts={}){
-  // Home is the shelf unless Settings → Home page picks Brew today
-  if(v==='home'&&!homeOn()&&!opts.force)v='shelf';
+  // the logo opens your home page: Brew today or the tea shelf (Settings → Home page)
+  if(v==='start')v=homeOn()?'home':'shelf';
+  // the journal lives in the Library tab
+  if(v==='journal'){v='library';state.folds.journal=true;LS.set('lln-folds',state.folds)}
   if(state.view==='brew'&&v!=='brew'){tReset();S=null;$('#view-brew').innerHTML=''}
   if(v==='home'&&S?.home&&!brewDirty())hbClear(); // after a brew is logged, start fresh
   hbEnd();
@@ -9,7 +11,7 @@ function setView(v,opts={}){
   const tid=v==='brew'?S?.teaId:state.teaId;const tab=v==='tea'||v==='brew'?(teaById(tid)?.finished?'library':'shelf'):v;$$('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===tab));$('#gearBtn')?.setAttribute('aria-pressed',v==='settings');
   $$('.view').forEach(s=>s.hidden=s.id!=='view-'+v);renderView();window.scrollTo(0,0);
 }
-function renderView(){({library:renderLibrary,shelf:renderShelf,tea:renderTea,journal:renderJournal,insights:renderInsights,guide:renderGuide,settings:renderSettings,brew:renderBrew,home:renderHome})[state.view]()}
+function renderView(){({library:renderLibrary,shelf:renderShelf,tea:renderTea,insights:renderInsights,guide:renderGuide,settings:renderSettings,brew:renderBrew,home:renderHome})[state.view]()}
 function renderAll(){
   if(state.view==='brew'){if(S)rCompare();else renderView()}else if(state.view==='home'&&S?.home){/* keep the brew in progress */}else{
   const ae=document.activeElement;if(ae?.closest?.('#view-settings,#view-guide')&&['INPUT','SELECT'].includes(ae.tagName)&&ae.id!=='gq'){/* keep focus while typing */}else renderView();}

@@ -16,9 +16,8 @@ Arrange.init({
   restore:()=>{const b=arrBack||{view:'shelf'};b.view==='brew'&&b.teaId?openSessionForm({teaId:b.teaId}):setView(b.view,{teaId:b.teaId})},
   screens:[
    {name:'Home Page',show:()=>setView('shelf')},
-   {name:'Brew Today',show:()=>setView('home',{force:true})},
+   {name:'Brew Today',show:()=>setView('home')},
    {name:'Library',show:()=>setView('library')},
-   {name:'Journal',show:()=>setView('journal')},
    {name:'Tea Info',show:()=>arrTea()?setView('tea',{teaId:arrTea()}):setView('shelf')},
    {name:'Tea Log Page',show:()=>arrTea()?openSessionForm({teaId:arrTea()}):setView('shelf')},
    {name:'Insights',show:()=>setView('insights')},

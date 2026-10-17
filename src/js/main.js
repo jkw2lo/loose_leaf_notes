@@ -1,3 +1,3 @@
 /* Boot: render the first view, then connect storage. */
-setView('home');
+setView('start');
 store.init();

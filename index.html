@@ -13,14 +13,13 @@
 <body>
 <header class="top">
   <div class="wrap">
-    <button class="brand" data-a="view" data-v="home" aria-label="Home" data-mock="txt.heading" data-mock-label="Loose Leaf Notes">
+    <button class="brand" data-a="view" data-v="start" aria-label="Home" data-mock="txt.heading" data-mock-label="Loose Leaf Notes">
       <svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="13" rx="12" ry="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 13c0 8 5 14 12 14s12-6 12-14" fill="none" stroke="currentColor" stroke-width="1.6"/><ellipse cx="16" cy="13.4" rx="9.5" ry="2.6" style="fill:var(--accent);opacity:.55"/><path d="M19 4c-4 0-6 3-5 6 3 0 6-2 5-6z" style="fill:var(--accent)"/></svg>
       <b>Loose Leaf Notes</b>
     </button>
     <nav class="tabs" role="tablist" aria-label="Sections">
-      <button role="tab" data-a="view" data-v="shelf" aria-selected="true">Teas</button>
-      <button role="tab" data-a="view" data-v="library" aria-selected="false">Library</button>
-      <button role="tab" data-a="view" data-v="journal" aria-selected="false">Journal</button>
+      <span class="tab-pair" role="none"><button role="tab" data-a="view" data-v="home" aria-selected="false" title="Brew today">Brew</button><button role="tab" data-a="view" data-v="shelf" aria-selected="false" title="Tea shelf">Teas</button></span>
+      <button role="tab" data-a="view" data-v="library" aria-selected="false" title="Library and journal">Library</button>
       <button role="tab" data-a="view" data-v="insights" aria-selected="false">Insights</button>
       <button role="tab" data-a="view" data-v="guide" aria-selected="false">Guides</button>
     </nav>
@@ -33,7 +32,6 @@
   <section class="view" id="view-shelf" data-arr="page-shelf" data-arr-auto></section>
   <section class="view" id="view-tea" data-arr="page-tea" data-arr-auto hidden></section>
   <section class="view" id="view-library" data-arr="page-library" data-arr-auto hidden></section>
-  <section class="view" id="view-journal" data-arr="page-journal" data-arr-auto hidden></section>
   <section class="view" id="view-insights" data-arr="page-insights" data-arr-auto hidden></section>
   <section class="view" id="view-guide" data-arr="page-guide" data-arr-auto hidden></section>
   <section class="view" id="view-settings" data-arr="page-settings" data-arr-auto hidden></section>

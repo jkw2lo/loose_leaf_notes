@@ -9,7 +9,7 @@ function renderSettings(){
   const s=store.settings;const cts=s.customTypes||[];
   $('#view-settings').innerHTML=`<div class="page-head"><div><h1>Settings</h1><p>Make logging fit the way you brew.</p></div></div>
   <div class="set-grid" data-arr="settings-grid" data-arr-auto>
-   <div class="panel"><h2>Home page</h2><p class="sub">What you see when you open the app or click Loose Leaf Notes at the top. The tea shelf is always under Teas.</p>
+   <div class="panel"><h2>Home page</h2><p class="sub">What you see when you open the app or click Loose Leaf Notes at the top. Both are always in the menu as Brew and Teas.</p>
     <div class="seg" role="group" aria-label="Home page"><button data-a="setHome" data-v="shelf" aria-pressed="${s.homeLayout!=='brew'}">Tea shelf</button><button data-a="setHome" data-v="brew" aria-pressed="${s.homeLayout==='brew'}">Brew today</button></div>
     <p class="sub">${s.homeLayout==='brew'?'Brew today: pick a tea, teaware and leaf, then log each infusion as a card with its own timer.':'Tea shelf: your teas in rotation, with stats and the brew guide beside them.'}</p></div>
    <div class="panel"><h2>Temperature input</h2><p class="sub">How you set water temperature when logging. You can also switch while logging.</p>
