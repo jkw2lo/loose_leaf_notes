@@ -6,6 +6,7 @@ It runs entirely in the browser with no build step and no dependencies. It can a
 
 ## What it does
 
+- **Setup guide.** A new notebook opens with four short steps: welcome, the teaware you own, units and your home page, then your first tea. Run it again any time from **Settings → Setup guide**.
 - **Tea shelf.** Your teas grouped by family (Japanese green, Wuyi rock oolong, raw pu'er, breakfast and Earl Grey blends, and so on). Each tea tracks brand, origin, harvest, cultivar, how much is left and what it cost.
 - **Brewing guides.** 115 tea types across 16 families, each listing only the methods traditionally used for it: sencha gets kyusu, cold brew and ice brew; matcha gets usucha and koicha; masala chai is simmered. Each guide covers teaware, leaf, water, temperature, infusion schedule and typical liquor colour, plus step-by-step instructions. You can edit any guide to set your own baseline.
 - **Producer's recipe.** Record the brewing instructions on the packet and compare them with the typical guide.
@@ -95,7 +96,7 @@ src/js/data/tea-data.js    Tea families, types, brewing methods, liquor colours,
 src/js/core/               Utilities, guide logic, storage, export and backup
 src/js/ui/                 SVG illustrations and charts; arrange.js, the drop-in layout editor
 src/js/views/              Shelf, Brew today home, tea page, library, journal, insights, guides, settings, routing
-src/js/sheets/             Session form and timer, session detail, tea form and import, comboboxes
+src/js/sheets/             Session form and timer, session detail, tea form and import, comboboxes, setup guide
 src/js/events.js           Event delegation for the whole app
 src/js/core/arrange-setup.js  Arrange mode settings for this app (where layouts save, which pages export)
 src/js/main.js             Boot
@@ -109,7 +110,7 @@ The scripts are classic scripts that share globals and load in the order listed 
 
 - **Tea:** `name`, `lib` (tea type), `fam` (family), `brand`, `origin`, `harvest`, `cultivar`, `url`, `notes`, `producer` (recipe), `stock` (grams, price), `finished`, `verdict`.
 - **Session:** `teaId`, `at`, `style` (method), `vesselType`, `g`, `ml`, `temp` (°C), `rinse`, `steeps` (each with seconds, liquor, score, tags, note), `rating`, `axes` (palate), `notes`.
-- **Settings:** `homeLayout` (`shelf` or `brew`), `tempMode`, `unit`, `vessels`, `customTypes`, `guideOverrides`.
+- **Settings:** `setupDone`, `homeLayout` (`shelf` or `brew`), `tempMode`, `unit`, `vessels`, `customTypes`, `guideOverrides`.
 
 ### Editing tea data
 

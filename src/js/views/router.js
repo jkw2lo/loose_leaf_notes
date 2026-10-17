@@ -13,4 +13,5 @@ function renderView(){({library:renderLibrary,shelf:renderShelf,tea:renderTea,jo
 function renderAll(){
   if(state.view==='brew'){if(S)rCompare();else renderView()}else if(state.view==='home'&&S?.home){/* keep the brew in progress */}else{
   const ae=document.activeElement;if(ae?.closest?.('#view-settings,#view-guide')&&['INPUT','SELECT'].includes(ae.tagName)&&ae.id!=='gq'){/* keep focus while typing */}else renderView();}
-  const k=$('#scrim').dataset.kind;if(!$('#scrim').hidden&&k==='session'&&openId){const b=store.brews.find(x=>x.id===openId);b?$('#sheet').innerHTML=sessionDetailHTML(b):closeSheet()}}
+  const k=$('#scrim').dataset.kind;if(!$('#scrim').hidden&&k==='session'&&openId){const b=store.brews.find(x=>x.id===openId);b?$('#sheet').innerHTML=sessionDetailHTML(b):closeSheet()}
+  maybeSetup()}

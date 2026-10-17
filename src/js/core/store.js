@@ -12,7 +12,7 @@ const store = {
       const err=()=>toast('Lost the connection to your notes. Reload the page to reconnect.');
       db.collection('teas').onSnapshot(s=>{this.teas=s.docs.map(d=>normTea({...d.data(),id:d.id}));ready>=2?renderAll():go()},err);
       db.collection('brews').onSnapshot(s=>{this.brews=s.docs.map(d=>normBrew({...d.data(),id:d.id}));ready>=2?renderAll():go()},err);
-      db.doc('settings/prefs').onSnapshot(s=>{if(s.exists){this.settings={...DEFAULT_SETTINGS,...s.data()};LS.set('lln-settings',{unit:this.settings.unit,tempMode:this.settings.tempMode,homeLayout:this.settings.homeLayout});if(ready>=2&&!S&&!TF)renderAll()}},()=>{});
+      db.doc('settings/prefs').onSnapshot(s=>{if(s.exists){this.settings={...DEFAULT_SETTINGS,...s.data()};LS.set('lln-settings',{unit:this.settings.unit,tempMode:this.settings.tempMode,homeLayout:this.settings.homeLayout,setupDone:this.settings.setupDone});if(ready>=2&&!S&&!TF)renderAll()}},()=>{});
     }else{
       this.mode='local';this.teas=LS.get('lln-teas',[]).map(normTea);this.brews=LS.get('lln-brews',[]).map(normBrew);
       this.settings={...DEFAULT_SETTINGS,...LS.get('lln-settings-full',{})};renderAll();
@@ -29,7 +29,7 @@ const store = {
   async removeBrew(id){if(this.mode==='db')await this.db.collection('brews').doc(id).delete();else{this.brews=this.brews.filter(b=>b.id!==id);LS.set('lln-brews',this.brews);renderAll()}},
   async removeTea(id){for(const b of this.brews.filter(b=>b.teaId===id))await this.removeBrew(b.id);
     if(this.mode==='db')await this.db.collection('teas').doc(id).delete();else{this.teas=this.teas.filter(t=>t.id!==id);LS.set('lln-teas',this.teas);renderAll()}},
-  setSettings(patch){this.settings={...this.settings,...patch};LS.set('lln-settings',{unit:this.settings.unit,tempMode:this.settings.tempMode,homeLayout:this.settings.homeLayout});
+  setSettings(patch){this.settings={...this.settings,...patch};LS.set('lln-settings',{unit:this.settings.unit,tempMode:this.settings.tempMode,homeLayout:this.settings.homeLayout,setupDone:this.settings.setupDone});
     clearTimeout(this._setT);this._setT=setTimeout(async()=>{try{if(this.mode==='db')await this.db.doc('settings/prefs').set(JSON.parse(JSON.stringify(this.settings)));else LS.set('lln-settings-full',this.settings)}catch{toast('Could not save settings. Try again.')}},400)}
 };
 function allTeas(){

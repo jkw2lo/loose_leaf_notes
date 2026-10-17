@@ -59,6 +59,7 @@ document.addEventListener('click',async e=>{
    case 'importRun':runImport();return;
    case 'saveTea':saveTeaForm();return;
   }
+  if((a==='setup'||SU)&&setupAction(a,v))return;
   if(state.view==='home'&&homeAction(a,v,el))return;
   if(S)brewAction(a,v,el);
 });
@@ -71,6 +72,7 @@ document.addEventListener('input',e=>{
   if(t.id==='pickQ'){renderPickList();return}
   if(t.id==='libQ'){state.libQ=t.value;clearTimeout(renderLibrary._t);renderLibrary._t=setTimeout(renderLibrary,120);return}
   if(t.id==='gq'){state.gq=t.value;$('#glItems').innerHTML=guideListHTML();return}
+  if(setupInput(t))return;
   if(t.dataset.w){const id=t.dataset.id;store.setSettings({vessels:store.settings.vessels.map(x=>x.id===id?{...x,[t.dataset.w]:t.dataset.w==='ml'?(parseInt(t.value)||0):t.value}:x)});return}
   if(t.dataset.ct){const id=t.dataset.id,k=t.dataset.ct;store.setSettings({customTypes:(store.settings.customTypes||[]).map(c=>{if(c.id!==id)return c;if(k==='name')return{...c,name:t.value};if(k==='fam')return{...c,fam:t.value};const lo=parseFloat($('#ctl-'+id).value),hi=parseFloat($('#cth-'+id).value);return{...c,t:!isNaN(lo)&&!isNaN(hi)?[Math.min(lo,hi),Math.max(lo,hi)]:null}})});return}
   if(state.view==='home'&&homeInput(t))return;
@@ -91,7 +93,7 @@ document.addEventListener('change',e=>{
 });
 document.addEventListener('keydown',e=>{
   const t=e.target;
-  if(e.key==='Escape'&&!$('#scrim').hidden){const open=$$('.sugg-list').find(b=>!b.hidden);if(open){open.hidden=true;return}if(!['form','tea'].includes($('#scrim').dataset.kind))closeSheet();return}
+  if(e.key==='Escape'&&!$('#scrim').hidden){const open=$$('.sugg-list').find(b=>!b.hidden);if(open){open.hidden=true;return}if(!['form','tea','setup'].includes($('#scrim').dataset.kind))closeSheet();return}
   if(t.dataset?.combo){const box=$('#'+t.id+'-list');const items=box&&!box.hidden?$$('button',box):[];
     if(items.length&&(e.key==='ArrowDown'||e.key==='ArrowUp')){e.preventDefault();comboIdx=(comboIdx+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;items.forEach((b,i)=>b.classList.toggle('hi',i===comboIdx));items[comboIdx].scrollIntoView({block:'nearest'});return}
     if(e.key==='Enter'){e.preventDefault();if(items.length&&(comboIdx>=0||t.dataset.combo==='type'))items[Math.max(0,comboIdx)].click();else hideCombos();return}}

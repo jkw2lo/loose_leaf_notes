@@ -29,6 +29,8 @@ function renderSettings(){
       <button class="rm" data-a="rmType" data-v="${esc(c.id)}" aria-label="Remove ${esc(c.name)}">×</button></div>`).join('')}</div>`:''}
     <div><button class="btn sm" data-a="addType">＋ Add a tea type</button></div>
    </div>
+   <div class="panel"><h2>Setup guide</h2><p class="sub">Walk through your teaware, units and home page again, step by step. Nothing changes until you press Finish.</p>
+    <div class="tool-row"><button class="btn sm" data-a="setup">Run the setup guide</button></div></div>
    <div class="panel"><h2>Layout</h2><p class="sub">Drag blocks to reorder them, drag edges and column dividers to resize, and hide what you don’t use. Press <kbd>E</kbd> on any page to start, and Esc to finish. Your layout is saved with your settings.</p>
     <div class="tool-row"><button class="btn sm primary" data-a="arrange">Arrange the layout</button>${Object.keys(s.layout||{}).length?'<button class="btn sm" data-a="layoutReset">Reset every page</button>':''}</div></div>
    <div class="panel"><h2>Your data</h2>

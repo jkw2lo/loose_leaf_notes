@@ -1155,3 +1155,38 @@ body[data-view="home"] .fab{display:none}
   #view-home .bw-timer.idle{display:none}
   .hb-discard{margin-left:0}
 }
+
+/* ═════════ Setup guide ═════════ */
+.sheet:has(.su-body){max-width:760px}
+.su-prog{list-style:none;margin:0;padding:14px 20px 4px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.su-prog li{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--ink-3);padding-top:8px;border-top:3px solid var(--line);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.su-prog li span{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-family:var(--f-mono);background:var(--surface-2);color:var(--ink-2)}
+.su-prog li.done{border-top-color:var(--accent);color:var(--ink-2)}
+.su-prog li.done span{background:var(--accent);color:var(--accent-ink)}
+.su-prog li.cur{border-top-color:var(--accent);color:var(--ink)}
+.su-prog li.cur span{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.su-body{gap:12px;padding-top:14px;padding-bottom:22px}
+.su-h{font-size:21px;margin-top:6px}
+.su-p{color:var(--ink-2);max-width:62ch}
+.su-hero{display:flex;gap:6px;justify-content:center;padding:6px 0 0}
+.su-hero svg{width:84px;height:63px}
+.su-list{margin:0;padding-left:20px;display:grid;gap:6px;color:var(--ink-2)}
+.su-list b{color:var(--ink)}
+.su-pick{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+.su-sub{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:6px}
+.su-sub .muted{font-size:12.5px}
+.su-homes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.su-home svg{height:auto;aspect-ratio:16/9;border-radius:8px;background:var(--surface);border:1px solid var(--line)}
+.su-home svg rect,.su-home svg circle{fill:var(--surface-2)}
+.su-home svg .s1{fill:color-mix(in srgb,var(--ink-3) 35%,var(--surface-2))}
+.su-home svg .s2{fill:var(--accent)}
+.su-home svg .dash{fill:none;stroke:var(--line);stroke-dasharray:3 2}
+.su-home svg .plus{stroke:var(--accent);stroke-width:2;stroke-linecap:round}
+.su-cta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px}
+.su-cta .muted{font-size:13px}
+@media (max-width:560px){
+  .su-homes{grid-template-columns:1fr}
+  .su-prog li{font-size:0;gap:0;justify-content:center}
+  .su-prog li span{font-size:11px}
+  .su-hero svg{width:64px;height:48px}
+}
