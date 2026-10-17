@@ -1045,7 +1045,11 @@ body[data-view="home"] .fab{display:none}
 .hb-sel select:invalid,.hb-sel select option[disabled]{color:var(--ink-3)}
 .hb-sel::after{content:"";position:absolute;right:16px;top:50%;width:7px;height:7px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);transform:translateY(-70%) rotate(45deg);pointer-events:none}
 .hb-ware{margin-inline:auto}
-.seg.hb-ware button{padding:8px 14px}
+.seg.hb-ware{flex-wrap:nowrap;align-items:center}
+.seg.hb-ware button{padding:8px 14px;white-space:nowrap}
+.seg.hb-ware .hb-ware-pg{padding:6px 8px;font-size:18px;line-height:1;color:var(--ink-3)}
+.seg.hb-ware .hb-ware-pg:hover:not(:disabled){color:var(--ink);background:color-mix(in srgb,var(--surface) 60%,transparent)}
+.seg.hb-ware .hb-ware-pg:disabled{opacity:.3;cursor:default}
 .hb-step{flex:none;display:inline-flex;align-items:center;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
 .hb-step button{width:40px;height:100%;border:0;background:none;font-size:20px;line-height:1;color:var(--ink-2)}
 .hb-step button:hover{background:var(--surface-2);color:var(--ink)}
@@ -1110,6 +1114,8 @@ body[data-view="home"] .fab{display:none}
 @media (max-width:1000px){.hb-row{grid-auto-columns:calc((100% - 16px) / 2)}.hb-ware{margin-inline:0}}
 @media (max-width:720px){
   .hb-sel{flex:1 1 100%}
+  .seg.hb-ware{width:100%}
+  .seg.hb-ware [data-a="hbWare"]{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;padding-inline:8px}
   .hb-step{flex:1 1 auto;justify-content:space-between}
   .hb-go{flex:1 1 auto}
   .hb-row{grid-auto-columns:86%}

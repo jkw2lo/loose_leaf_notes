@@ -33,8 +33,7 @@ function renderHome(){
      ${shelf.length?`<optgroup label="On your shelf">${shelf.map(opt).join('')}</optgroup>`:''}
      ${lib.length?`<optgroup label="Finished, in your library">${lib.map(opt).join('')}</optgroup>`:''}
      <option value="__new">＋ Add new tea</option></select></label>
-    ${own.length?`<div class="seg hb-ware" role="group" aria-label="Teaware" data-mock="sel.segmented" data-mock-label="${esc(own.map(x=>x.name).join(', '))}">${own.map(x=>`<button type="button" data-a="hbWare" data-v="${esc(x.id)}" aria-pressed="${w?.id===x.id}">${esc(x.name)}</button>`).join('')}</div>`
-     :`<button type="button" class="linkbtn hb-ware" data-a="manageWare">Add your teaware</button>`}
+    ${hbWareSeg(w)}
     <div class="hb-step" role="group" aria-label="Leaf" data-mock="in.number" data-mock-label="${g}g"><button type="button" data-a="hbG" data-v="-1" aria-label="One gram less">−</button><span class="hb-step-v"><input id="hb-g" inputmode="decimal" value="${g}" aria-label="Leaf in grams"><b>g</b></span><button type="button" data-a="hbG" data-v="1" aria-label="One gram more">+</button></div>
     ${on?`<button type="button" class="btn primary hb-go" data-a="saveSession" data-mock="act.button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Add to log</button>`
      :`<button type="button" class="btn primary hb-go" data-a="hbStart" data-mock="act.button" ${t?'':'disabled'}>Start brewing</button>`}
@@ -47,6 +46,20 @@ function renderHome(){
    ${on?`<div class="hb-overall" id="hb-overall" data-arr-item="overall" data-arr-label="Overall rating">${hbOverall()}</div>`:''}`;
   if(on)rTimer();
 }
+/* teaware, three at a time, most used first; the arrows page through the rest */
+const HB_WARE_PER=3;
+function hbWareOrder(){const own=store.settings.vessels,n={};
+  // sessions logged with teaware you no longer list count toward the first piece of the same kind
+  store.brews.forEach(b=>{const w=own.find(x=>x.id===b.vesselId)||own.find(x=>x.type===b.vesselType);if(w)n[w.id]=(n[w.id]||0)+1});
+  return own.map((w,i)=>({w,i,n:n[w.id]||0})).sort((a,b)=>b.n-a.n||a.i-b.i).map(x=>x.w)}
+function hbWareSeg(w){const own=hbWareOrder();
+  if(!own.length)return `<button type="button" class="linkbtn hb-ware" data-a="manageWare">Add your teaware</button>`;
+  const pages=Math.ceil(own.length/HB_WARE_PER);
+  if(H.warePage==null){const i=own.findIndex(x=>x.id===w?.id);H.warePage=i>=0?Math.floor(i/HB_WARE_PER):0}
+  const p=H.warePage=clamp(H.warePage,0,pages-1);const shown=own.slice(p*HB_WARE_PER,(p+1)*HB_WARE_PER);
+  const arrow=(d,lab)=>`<button type="button" class="hb-ware-pg" data-a="hbWarePg" data-v="${d}" aria-label="${lab}" ${p+d<0||p+d>=pages?'disabled':''}>${d<0?'‹':'›'}</button>`;
+  return `<div class="seg hb-ware" role="group" aria-label="Teaware${pages>1?`, page ${p+1} of ${pages}`:''}" data-mock="sel.segmented" data-mock-label="${esc(shown.map(x=>x.name).join(', '))}">${pages>1?arrow(-1,'Previous teaware'):''}${shown.map(x=>`<button type="button" data-a="hbWare" data-v="${esc(x.id)}" aria-pressed="${w?.id===x.id}">${esc(x.name)}</button>`).join('')}${pages>1?arrow(1,'More teaware'):''}</div>`}
+const hbWareRedraw = ()=>{const el=$('.hb-ware');const t=hbTea();if(el)el.outerHTML=hbWareSeg(hbVessel(t,hbStyle(t)))};
 function hbIdleTimer(){return `<div class="tm-read" role="timer" aria-label="Steep timer"><span class="tm-time">0:00</span><span class="tm-sub">start brewing to time each steep</span></div><span class="tm-bar" aria-hidden="true"><i style="width:0"></i></span>`}
 function hbHint(t,style){const r=prodFor(t,style)||recFor(t,style);const ms=methodsFor(t);const u=style==='ice'?'g':'ml';
   const meth=ms.length>1&&!S?.home?`<span class="seg sm" role="group" aria-label="Method">${ms.map(m=>`<button type="button" data-a="hbStyle" data-v="${m.style}" aria-pressed="${m.style===style}">${STYLE[m.style]}</button>`).join('')}</span>`:`<b>${esc(STYLE[style]||style)}</b>`;
@@ -131,8 +144,9 @@ function homeAction(a,v,el){
   switch(a){
    case 'hbStart':hbStart();return true;
    case 'hbWare':{const w=store.settings.vessels.find(x=>x.id===v);if(!w)return true;H.vesselId=v;H.style=null;
-     if(S?.home){S.vesselId=w.id;S.vesselType=w.type;S.vesselName=w.name;if(!S.touched.has('ml')&&w.ml&&HB_SIZED.includes(S.style))S.steeps.forEach(b=>b.ml=w.ml);$$('.hb-ware button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));hbRerow()}
+     if(S?.home){S.vesselId=w.id;S.vesselType=w.type;S.vesselName=w.name;if(!S.touched.has('ml')&&w.ml&&HB_SIZED.includes(S.style))S.steeps.forEach(b=>b.ml=w.ml);hbWareRedraw();hbRerow()}
      else{if(!H.gTouched)H.g=null;renderHome()}return true}
+   case 'hbWarePg':H.warePage=(H.warePage||0)+(+v);hbWareRedraw();$(`.hb-ware [data-v="${v}"]`)?.focus();return true;
    case 'hbStyle':H.style=v;if(!H.gTouched)H.g=null;renderHome();return true;
    case 'hbG':{const i=$('#hb-g');const n=Math.max(1,Math.round((parseFloat(i.value)||0)+(+v)));i.value=n;hbSetG(n);return true}
    case 'hbStep':{const[k,key,d]=v.split(':');const b=S.steeps[+k];const cur=b[key]??sRec().target;hbSet(+k,key,cur+(+d)*fineStep(key,cur,+d));return true}
