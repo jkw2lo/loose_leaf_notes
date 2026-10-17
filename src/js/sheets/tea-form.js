@@ -42,7 +42,7 @@ function teaFormHTML(){const f=TF;const Tt=tfType();const fam=Tt?.fam||f.fam;con
     <div class="field"><label class="lbl" for="pr-notes">Their notes</label><input class="input" id="pr-notes" value="${esc(p.notes||'')}" placeholder="Anything else they suggest"></div></div>`:'<p class="vnote">Choose the tea type first.</p>'}
   </details>
  </form>
- <div class="sheet-foot"><span class="hint" id="tfHint"></span>${f.editing?`<button class="btn danger" data-a="delTea" data-v="${esc(f.id)}">Delete tea</button>`:''}<button class="btn ghost" data-a="close">Cancel</button><button class="btn primary" data-a="saveTea">${f.then==='session'?'Save & log session':f.editing?'Save changes':'Add to shelf'}</button></div>`}
+ <div class="sheet-foot"><span class="hint" id="tfHint"></span>${f.editing?`<button class="btn danger" data-a="delTea" data-v="${esc(f.id)}">Delete tea</button>`:''}<button class="btn ghost" data-a="close">Cancel</button><button class="btn primary" data-a="saveTea">${f.then==='session'?'Save & log session':f.then==='home'?'Add & brew it':f.editing?'Save changes':'Add to shelf'}</button></div>`}
 function importHTML(){
   const ai=!!store.sample;
   return `<p class="vnote">This page can’t open links itself. Open the product page, select all of its text, copy it and paste it below${ai&&store.sampleImages?', or add a photo of the label':''}. ${ai?'Claude reads it and fills in the form.':'The form is filled in from what it can recognise.'}</p>
@@ -63,7 +63,7 @@ async function saveTeaForm(){readTeaForm();const Tt=tfType();const fam=Tt?.fam||
   const t={id:TF.id,name,lib:TF.lib||'',fam,brand:TF.brand,origin:TF.origin,harvest:TF.harvest,cultivar:TF.cultivar,url:TF.url,notes:TF.notes,producer:TF.producer||null,stock:TF.stock||null,createdAt:TF.createdAt||new Date().toISOString()};if(TF.finished)t.finished=TF.finished;if(TF.verdict)t.verdict=TF.verdict;
   if(TF.example)t.example=true;
   const then=TF.then;const btn=$('[data-a="saveTea"]');btn.disabled=true;
-  try{await store.saveTea(t);if(then==='session'){openSessionForm({teaId:t.id})}else{const wasEdit=TF.editing;closeSheet();toast(wasEdit?'Tea saved':'Added to your shelf');if(state.view==='tea'&&state.teaId===t.id)renderTea();else setView('tea',{teaId:t.id})}}
+  try{await store.saveTea(t);if(then==='session'){openSessionForm({teaId:t.id})}else if(then==='home'){closeSheet();toast('Added to your shelf');if(state.view==='home'&&!(S?.home&&brewDirty()))hbPickTea(t.id)}else{const wasEdit=TF.editing;closeSheet();toast(wasEdit?'Tea saved':'Added to your shelf');if(state.view==='tea'&&state.teaId===t.id)renderTea();else setView('tea',{teaId:t.id})}}
   catch{btn.disabled=false;$('#tfHint').textContent='Could not save. Check your connection and try again.'}}
 
 /* product page import */

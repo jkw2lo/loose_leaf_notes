@@ -43,6 +43,7 @@ document.addEventListener('click',async e=>{
    case 'setMode':store.setSettings({tempMode:v});renderSettings();return;
    case 'arrange':Arrange.toggle(true);return;
    case 'layoutReset':if(!arm(el,'Tap again to reset'))return;store.setSettings({layout:{}});Arrange.apply();renderSettings();toast('Layout reset on every page');return;
+   case 'setHome':store.setSettings({homeLayout:v});renderSettings();toast(v==='brew'?'Home is now Brew today':'Home is now your tea shelf');return;
    case 'setUnit':store.setSettings({unit:v});renderView();return;
    case 'rmWare':store.setSettings({vessels:store.settings.vessels.filter(x=>x.id!==v)});renderSettings();return;
    case 'addWare':{const vt=VT[v];const same=store.settings.vessels.filter(x=>x.type===v).length;store.setSettings({vessels:[...store.settings.vessels,{id:uid('w'),type:v,name:vt.name+(same?' '+(same+1):''),ml:vt.ml}]});renderSettings();toast(vt.name+' added to your teaware');return}
@@ -58,6 +59,7 @@ document.addEventListener('click',async e=>{
    case 'importRun':runImport();return;
    case 'saveTea':saveTeaForm();return;
   }
+  if(state.view==='home'&&homeAction(a,v,el))return;
   if(S)brewAction(a,v,el);
 });
 $('#scrim').addEventListener('mousedown',e=>{if(e.target.id==='scrim'&&['session','picker'].includes($('#scrim').dataset.kind))closeSheet()});
@@ -71,6 +73,7 @@ document.addEventListener('input',e=>{
   if(t.id==='gq'){state.gq=t.value;$('#glItems').innerHTML=guideListHTML();return}
   if(t.dataset.w){const id=t.dataset.id;store.setSettings({vessels:store.settings.vessels.map(x=>x.id===id?{...x,[t.dataset.w]:t.dataset.w==='ml'?(parseInt(t.value)||0):t.value}:x)});return}
   if(t.dataset.ct){const id=t.dataset.id,k=t.dataset.ct;store.setSettings({customTypes:(store.settings.customTypes||[]).map(c=>{if(c.id!==id)return c;if(k==='name')return{...c,name:t.value};if(k==='fam')return{...c,fam:t.value};const lo=parseFloat($('#ctl-'+id).value),hi=parseFloat($('#cth-'+id).value);return{...c,t:!isNaN(lo)&&!isNaN(hi)?[Math.min(lo,hi),Math.max(lo,hi)]:null}})});return}
+  if(state.view==='home'&&homeInput(t))return;
   if(S)brewInput(t);
 });
 document.addEventListener('focusin',e=>{const t=e.target;if(t.dataset?.combo==='type')renderCombo(t)});
@@ -83,6 +86,7 @@ document.addEventListener('change',e=>{
   if(t.dataset.ct==='fam'){t.dispatchEvent(new Event('input',{bubbles:true}));return}
   if(t.id==='importFile'){const f=t.files?.[0];if(f)importBackup(f);t.value='';return}
   if(t.id==='im-photo'){const f=t.files?.[0];$('#im-photo-name').textContent=f?f.name:'';return}
+  if(state.view==='home'&&homeChange(t))return;
   if(S)brewChange(t);
 });
 document.addEventListener('keydown',e=>{
@@ -92,6 +96,8 @@ document.addEventListener('keydown',e=>{
     if(items.length&&(e.key==='ArrowDown'||e.key==='ArrowUp')){e.preventDefault();comboIdx=(comboIdx+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;items.forEach((b,i)=>b.classList.toggle('hi',i===comboIdx));items[comboIdx].scrollIntoView({block:'nearest'});return}
     if(e.key==='Enter'){e.preventDefault();if(items.length&&(comboIdx>=0||t.dataset.combo==='type'))items[Math.max(0,comboIdx)].click();else hideCombos();return}}
   if(t.dataset?.st==='ctag'&&e.key==='Enter'){e.preventDefault();addStepTag(+t.dataset.i);return}
+  if(t.dataset?.hk==='ctag'&&e.key==='Enter'){e.preventDefault();hbAddTag(+t.dataset.k);return}
+  if(t.id==='hb-g'&&e.key==='Enter'){e.preventDefault();t.blur();return}
   if(t.dataset?.ge!=null&&e.key==='Enter'){e.preventDefault();t.blur();return}
   if(t.tagName==='TR'&&t.dataset.a&&(e.key==='Enter'||e.key===' ')){e.preventDefault();t.click();return}
   if(t.closest?.('#view-brew,#teaForm')&&e.key==='Enter'&&t.tagName==='INPUT'){e.preventDefault();t.blur()}

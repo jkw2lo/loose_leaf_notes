@@ -13,7 +13,8 @@ It runs entirely in the browser with no build step and no dependencies. It can a
 - **Comparison.** Each tea shows your sessions charted against the guide: steep curves, deviations in leaf, temperature and infusions, and palate overlays.
 - **Library.** Finished teas move to a library with a final score, a "would you buy it again" answer and a parting note, with every session still available.
 - **Journal and insights.** Sessions by date, plus what correlates with your best-rated cups.
-- **Settings.** Your teaware (only these appear when logging), temperature input style (dial, steps, scale or typed), °C/°F, your own tea types, export and restore.
+- **Brew today home page.** An optional home page (Settings → Home page) for brewing straight away: pick a tea (or add a new one), your teaware and grams of leaf, then Start brewing. Each infusion is a card with volume, temperature and time, its own Start timer for the shared timer, and its score, liquor colour, flavours, comments and palate. The tea shelf stays under Teas.
+- **Settings.** Your home page, your teaware (only these appear when logging), temperature input style (dial, steps, scale or typed), °C/°F, your own tea types, export and restore.
 
 ## Arrange mode and mockup export
 
@@ -93,7 +94,7 @@ src/styles.css             All styles; colours are tokens with light and dark th
 src/js/data/tea-data.js    Tea families, types, brewing methods, liquor colours, places, brands, teaware
 src/js/core/               Utilities, guide logic, storage, export and backup
 src/js/ui/                 SVG illustrations and charts; arrange.js, the drop-in layout editor
-src/js/views/              Shelf, tea page, library, journal, insights, guides, settings, routing
+src/js/views/              Shelf, Brew today home, tea page, library, journal, insights, guides, settings, routing
 src/js/sheets/             Session form and timer, session detail, tea form and import, comboboxes
 src/js/events.js           Event delegation for the whole app
 src/js/core/arrange-setup.js  Arrange mode settings for this app (where layouts save, which pages export)
@@ -108,7 +109,7 @@ The scripts are classic scripts that share globals and load in the order listed 
 
 - **Tea:** `name`, `lib` (tea type), `fam` (family), `brand`, `origin`, `harvest`, `cultivar`, `url`, `notes`, `producer` (recipe), `stock` (grams, price), `finished`, `verdict`.
 - **Session:** `teaId`, `at`, `style` (method), `vesselType`, `g`, `ml`, `temp` (°C), `rinse`, `steeps` (each with seconds, liquor, score, tags, note), `rating`, `axes` (palate), `notes`.
-- **Settings:** `tempMode`, `unit`, `vessels`, `customTypes`, `guideOverrides`.
+- **Settings:** `homeLayout` (`shelf` or `brew`), `tempMode`, `unit`, `vessels`, `customTypes`, `guideOverrides`.
 
 ### Editing tea data
 

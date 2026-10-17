@@ -5,7 +5,7 @@ let S=null;
 function blankAxes(){return{aroma:0,sweet:0,body:0,bite:0,finish:0,qi:0}}
 function openSessionForm({teaId,brew,mode}){
   const t=teaById(teaId||brew?.teaId);if(!t){openPicker();return}
-  if(state.view==='brew'&&S?.id!==brew?.id&&!leaveOK())return;
+  if((state.view==='brew'&&S?.id!==brew?.id||state.view==='home')&&!leaveOK())return;
   const from=state.view==='brew'?S?.from:{view:state.view,teaId:state.teaId};
   closeSheet();
   if(mode==='edit'){const b=JSON.parse(JSON.stringify(brew));
@@ -26,7 +26,7 @@ function openSessionForm({teaId,brew,mode}){
 const brewSnap = ()=>JSON.stringify([S.style,S.g,S.vesselId,S.rinse,S.rating,S.at,S.steeps]);
 const brewDirty = ()=>!!S&&(S.snap!==brewSnap()||T.acc>0||T.run);
 let leaveWarned=0;
-function leaveOK(){if(state.view!=='brew'||!brewDirty())return true;if(Date.now()-leaveWarned<4000)return true;leaveWarned=Date.now();toast('This brew is not saved. Click again to leave without saving.');return false}
+function leaveOK(){if(!['brew','home'].includes(state.view)||!brewDirty())return true;if(Date.now()-leaveWarned<4000)return true;leaveWarned=Date.now();toast('This brew is not saved. Click again to leave without saving.');return false}
 function sTea(){return teaById(S.teaId)}
 function sRec(){return recFor(sTea(),S.style)}
 function sProd(){return prodFor(sTea(),S.style)}
@@ -208,14 +208,15 @@ function tStart(){if(T.run)return;T.run=true;T.t0=performance.now();
   clearInterval(T.iv);T.iv=setInterval(tTick,100);rTimer()}
 function tPause(){if(!T.run)return;T.acc=tElapsed();T.run=false;clearInterval(T.iv);try{T.lock?.release()}catch{}T.lock=null}
 function tStopLog(){if(!T.run)return;tPause();const s=Math.max(1,Math.round(T.acc));T.acc=s;T.done=true;const b=S.steeps[T.brew];
-  if(b){b.s=s;if(S.cur===T.brew)rBrews();else rTabTime(T.brew)}rCompare();rTimer();toast(`Brew ${T.brew+1}: ${fmtS(s)} logged`)}
+  if(b){b.s=s;if(S.home)hbRerender(T.brew);else if(S.cur===T.brew)rBrews();else rTabTime(T.brew)}rCompare();rTimer();toast(`Brew ${T.brew+1}: ${fmtS(s)} logged`)}
 function rTimer(){const el=$('#bw-timer');if(!el||!S)return;const e=tElapsed();const over=T.run&&e>=T.target;
   el.className='bw-timer'+(T.run?' running':'')+(over?' over':'')+(T.done?' done':'');
   el.innerHTML=`<div class="tm-read" role="timer" aria-label="Steep timer"><span class="tm-time" id="ringT">${T.done?fmtClock(e):over?'+'+fmtClock(e-T.target):fmtClock(Math.ceil(T.target-e))}</span><span class="tm-sub" id="ringS">${T.done?'brew '+(T.brew+1)+' logged':T.run?(over?'pour now':'steeping'):'brew '+(T.brew+1)}</span></div>
    <span class="tm-bar" aria-hidden="true"><i id="ringP" style="width:${clamp(e/(T.target||1),0,1)*100}%"></i></span>
    <div class="tm-ctrl">${T.run?`<button type="button" class="btn primary" data-a="tStop" title="End this steep and log the time">■ Stop</button><button type="button" class="btn ghost" data-a="tReset" title="Stop without logging">Cancel</button>`
     :T.done?`<button type="button" class="btn primary" data-a="brewNext">＋ Next brew</button><button type="button" class="btn ghost" data-a="tReset">Redo</button>`
-    :`<button type="button" class="btn primary" data-a="tStart">▶ Start</button>`}</div>`}
+    :`<button type="button" class="btn primary" data-a="tStart">▶ Start</button>`}</div>`;
+  if(S.home)hbTimeBtns()}
 function tTick(){if(!T.run)return;const e=tElapsed();const p=$('#ringP'),tt=$('#ringT'),ss=$('#ringS');if(!p){return}
   const rem=T.target-e;p.style.width=clamp(e/T.target,0,1)*100+'%';
   if(rem>0){tt.textContent=fmtClock(Math.ceil(rem));ss.textContent='steeping'}else{tt.textContent='+'+fmtClock(-rem);ss.textContent='pour now'}
