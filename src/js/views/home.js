@@ -2,14 +2,16 @@
    Pick a tea, teaware and leaf along the top, then Start brewing. Each infusion gets its own card in a row
    (volume, temperature, time, then flavour, colour and notes); Start timer on a card runs the shared timer up top.
    It uses the brew page's session state (S, with S.home set), timer (T) and save. */
-const H={teaId:null,vesselId:null,g:null,gTouched:false,style:null};
+const H={teaId:null,vesselId:null,g:null,gTouched:false,style:null,factI:null,factIv:null};
 const HB_SIZED=['gongfu','kyusu','glass'];
 const homeOn = ()=>store.settings.homeLayout==='brew';
 const hbShelf = ()=>allTeas().filter(t=>!t.finished).sort((a,b)=>lastBrewAt(b)-lastBrewAt(a)||a.name.localeCompare(b.name));
-const hbTea = ()=>S?.home?sTea():teaById(H.teaId)||hbShelf()[0]||null;
+// nothing is picked until you choose a tea; the centre shows your numbers and tea facts meanwhile
+const hbTea = ()=>S?.home?sTea():teaById(H.teaId)||null;
+const hbClear = ()=>Object.assign(H,{teaId:null,style:null,g:null,gTouched:false});
 function hbVessel(t,style){const own=store.settings.vessels;
   if(S?.home)return own.find(w=>w.id===S.vesselId)||null;
-  const picked=own.find(w=>w.id===H.vesselId);if(picked)return picked;
+  const picked=own.find(w=>w.id===H.vesselId);if(picked||!t)return picked||null;
   const r=t&&style?recFor(t,style):null;return own.find(w=>r?.vessels.includes(w.type))||own[0]||null}
 /* the method follows the teaware: a teapot brews western, a gaiwan gong fu, when the tea allows both */
 function hbStyle(t){if(S?.home)return S.style;if(!t)return null;const ms=methodsFor(t);
@@ -18,7 +20,7 @@ function hbStyle(t){if(S?.home)return S.style;if(!t)return null;const ms=methods
   return fit?.style||defaultStyle(t)}
 function hbDefaultG(t,style,w){const r=prodFor(t,style)||recFor(t,style);
   return Math.max(1,Math.round(w?.ml&&HB_SIZED.includes(style)?avg(r.per)*w.ml/100:r.gT))}
-const hbG = (t,style,w)=>S?.home?S.g:H.gTouched&&H.g!=null?H.g:t?hbDefaultG(t,style,w):2;
+const hbG = (t,style,w)=>S?.home?S.g:H.gTouched&&H.g!=null?H.g:t?hbDefaultG(t,style,w):'';
 
 function renderHome(){
   const el=$('#view-home');
@@ -85,11 +87,59 @@ document.addEventListener('keydown',e=>{const t=e.target;if(!t.closest?.('#hb-se
   // type a letter to jump to the next tea starting with it
   if(e.key.length===1&&/\S/.test(e.key)){const k=norm(e.key);const n=os.findIndex((o,j)=>j>i&&norm(o.textContent).startsWith(k));const f=n>=0?n:os.findIndex(o=>norm(o.textContent).startsWith(k));if(f>=0)go(f)}});
 const hbGW = g=>Math.max(1,String(g).length)+.5+'ch';
+/* before a tea is picked: a greeting, recent teas, and a card that cycles through your numbers and tea facts */
+function hbIdle(){const h=new Date().getHours();const hi=h<5?'Late night tea':h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  const shelf=hbShelf(),recent=shelf.filter(t=>brewsOf(t.id).length).slice(0,3),facts=hbFacts();
+  if(H.factI==null)H.factI=Math.floor(Math.random()*facts.length);const f=facts[H.factI%facts.length];hbFactTick();
+  return `<div class="hb-empty hb-idle"><span class="eyebrow">${hi}</span><h2>What's brewing today?</h2>
+   <p>${shelf.length?'Pick a tea above to get its recommended teaware, leaf and water.':'Add a tea you own to start brewing.'}</p>
+   ${recent.length?`<div class="hb-recent"><span class="lbl">Brew again</span>${recent.map(t=>`<button type="button" class="chip" data-a="hbTeaPick" data-v="${esc(t.id)}"><span class="dot" style="--c:${liqHex(teaLiq(t))}"></span>${esc(t.name)}</button>`).join('')}</div>`
+    :`<button type="button" class="btn" data-a="newTea" data-v="home">＋ Add a tea</button>`}
+   <figure class="hb-fact" aria-live="polite"><figcaption class="eyebrow" id="hb-fact-k">${f.k}</figcaption><p id="hb-fact">${f.t}</p>
+    <button type="button" class="linkbtn hb-fact-next" data-a="hbFact">Another ›</button></figure></div>`}
+const TEA_FACTS=['Green, white, oolong, black and pu’er all come from one plant, <i>Camellia sinensis</i>. The difference is in how the leaf is processed.',
+  'Gyokuro is shaded for around three weeks before picking, which keeps its leaves rich in theanine and gives it that deep, brothy sweetness.',
+  'Gong fu means “with skill”: lots of leaf, a small vessel, and many short steeps that each taste a little different.',
+  'Water boils at about 90°C at 3,000 m, so mountain tea houses brew cooler without trying.',
+  'Lu Yu’s 8th-century <i>Classic of Tea</i> judged water by its bubbles: first like fish eyes, then like strings of pearls along the edge.',
+  'Matcha is stone-ground whole leaf, so you drink the leaf itself rather than an infusion of it.',
+  'Many people keep an unglazed Yixing pot for a single kind of tea, because the clay slowly takes on its oils and aroma.',
+  'Earl Grey gets its citrus from oil of bergamot, a sour orange grown mostly in Calabria.',
+  'Pu’er is one of the few teas that’s meant to age: a good cake can keep changing for decades.',
+  'Huí gān, the sweetness that comes back after you swallow, is what the Finish slider is listening for.',
+  'Oolongs range from barely oxidised and floral to dark, roasted Wuyi rock teas, all under one name.',
+  'A rinse, or “awakening” the leaf, opens up rolled and compressed teas so the first real steep isn’t wasted.'];
+const hbDur = s=>{const h=Math.floor(s/3600),m=Math.round(s%3600/60);if(!h)return m<1?Math.round(s)+' seconds':m+' minute'+(m===1?'':'s');return h+' hour'+(h===1?'':'s')+(m?' '+m+' minute'+(m===1?'':'s'):'')};
+function hbFacts(){const bs=store.brews,out=[],me=t=>({k:'From your notes',t});
+  if(bs.length){const st=bs.flatMap(b=>(b.steeps||[]).map(s=>({...s,ml:s.ml??b.ml})));
+    const ml=st.reduce((a,s)=>a+(+s.ml||0),0),g=bs.reduce((a,b)=>a+(+b.g||0),0),secs=st.reduce((a,s)=>a+(s.s||0),0);
+    out.push(me(`You’ve logged <b>${bs.length} session${bs.length===1?'':'s'}</b> and <b>${st.length} infusion${st.length===1?'':'s'}</b> so far.`));
+    if(ml>0)out.push(me(`You’ve poured about <b>${ml>=1000?r1(ml/1000)+' litres':Math.round(ml)+' ml'}</b> of water over tea leaves. That’s roughly <b>${Math.max(1,Math.round(ml/350))} mug${Math.round(ml/350)===1?'':'s'}</b>’ worth.`));
+    if(g>0)out.push(me(g>=357?`You’ve steeped <b>${Math.round(g)} g</b> of leaf, about <b>${r1(g/357)}</b> pu’er cakes’ worth.`:`You’ve steeped <b>${r1(g)} g</b> of leaf, about <b>${Math.round(g/357*100)}%</b> of a 357 g pu’er cake.`));
+    if(secs>0)out.push(me(`Your leaves have spent <b>${hbDur(secs)}</b> in water, all told.`));
+    const by={};bs.forEach(b=>by[b.teaId]=(by[b.teaId]||0)+1);const top=Object.entries(by).sort((a,b)=>b[1]-a[1])[0];
+    if(top&&top[1]>1)out.push(me(`<b>${esc(teaById(top[0])?.name||'One tea')}</b> is your most-brewed tea, with ${top[1]} sessions.`));
+    const rated={};bs.filter(b=>b.rating).forEach(b=>(rated[b.teaId]=rated[b.teaId]||[]).push(b.rating));const best=Object.entries(rated).map(([id,r])=>[id,avg(r)]).sort((a,b)=>b[1]-a[1])[0];
+    if(best)out.push(me(`Your best-rated tea so far is <b>${esc(teaById(best[0])?.name||'one tea')}</b>, averaging ${r1(best[1])}/10.`));
+    const ware={};bs.forEach(b=>{const n=vesselOf(b).name;if(n)ware[n]=(ware[n]||0)+1});const tw=Object.entries(ware).sort((a,b)=>b[1]-a[1])[0];
+    if(tw&&tw[1]>1)out.push(me(`Your <b>${esc(tw[0])}</b> does the most work: ${tw[1]} sessions.`));
+    const fams=new Set(bs.map(b=>teaById(b.teaId)?.fam).filter(Boolean));if(fams.size)out.push(me(`You’ve brewed teas from <b>${fams.size} of the ${FAMS.length}</b> tea families.`));
+    const tags={};st.forEach(s=>(s.tags||[]).forEach(x=>tags[x]=(tags[x]||0)+1));const tt=Object.entries(tags).sort((a,b)=>b[1]-a[1])[0];
+    if(tt&&tt[1]>1)out.push(me(`The flavour you note most often is <b>${esc(tt[0])}</b>.`));
+    const long=[...bs].sort((a,b)=>(b.steeps||[]).length-(a.steeps||[]).length)[0];if((long?.steeps||[]).length>3)out.push(me(`Your longest session was <b>${long.steeps.length} infusions</b> of ${esc(teaName(long))}.`));
+    const last=Math.max(...bs.map(b=>+dt(b.at)));const days=Math.floor((Date.now()-last)/864e5);
+    out.push(me(days<1?'You’ve already had a session today. Another?':`Your last session was <b>${days} day${days===1?'':'s'}</b> ago.`));}
+  // alternate your numbers with tea facts
+  const tf=TEA_FACTS.map(t=>({k:'Tea fact',t}));const mix=[];for(let i=0;i<Math.max(out.length,tf.length);i++){if(out[i])mix.push(out[i]);if(tf[i])mix.push(tf[i])}return mix}
+function hbFactShow(dir=1){const p=$('#hb-fact');if(!p)return;const fs=hbFacts();H.factI=((H.factI||0)+dir+fs.length)%fs.length;const f=fs[H.factI];
+  const swap=()=>{p.innerHTML=f.t;$('#hb-fact-k').textContent=f.k;p.parentElement.classList.remove('fade')};
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return swap();p.parentElement.classList.add('fade');setTimeout(swap,250)}
+function hbFactTick(){clearInterval(H.factIv);H.factIv=setInterval(()=>{if(!$('#hb-fact')||state.view!=='home'){clearInterval(H.factIv);return}if(!document.hidden&&!$('.hb-fact:hover'))hbFactShow()},10000)}
 function hbIdleTimer(){return `<div class="tm-read" role="timer" aria-label="Steep timer"><span class="tm-time">0:00</span><span class="tm-sub">start brewing to time each steep</span></div><span class="tm-bar" aria-hidden="true"><i style="width:0"></i></span>`}
 function hbHint(t,style){const r=prodFor(t,style)||recFor(t,style);const ms=methodsFor(t);const u=style==='ice'?'g':'ml';
   const meth=ms.length>1&&!S?.home?`<span class="seg sm" role="group" aria-label="Method">${ms.map(m=>`<button type="button" data-a="hbStyle" data-v="${m.style}" aria-pressed="${m.style===style}">${STYLE[m.style]}</button>`).join('')}</span>`:`<b>${esc(STYLE[style]||style)}</b>`;
   return `${meth}<span>${r.producer?esc(t.brand||'Producer')+'’s recipe':'Typical'}: ${fmtGR(r.g)} · ${r.ml} ${u} · ${fmtTR(r.t,style)} · ${r.sched.slice(0,4).map(fmtS).join(', ')}${r.sched.length>4?'…':''}</span>`}
-function hbEmpty(t){const n=brewsOf(t?.id).length;
+function hbEmpty(t){if(!t)return hbIdle();const n=brewsOf(t.id).length;
   return `<div class="hb-empty"><h2>${t?esc(t.name):'Start a brew'}</h2><p>${t?`Choose your teaware and how much leaf, then Start brewing. Each infusion gets its own card here, with its own volume, temperature, time and tasting notes.${n?` You've brewed this tea ${n} time${n===1?'':'s'} before.`:''}`:'Pick a tea you own from the list, or add a new one.'}</p>
    ${t?`<button type="button" class="linkbtn" data-a="openTea" data-v="${esc(t.id)}">Tea page &amp; sessions</button>`:`<button type="button" class="btn" data-a="newTea" data-v="home">＋ Add a tea</button>`}</div>`}
 
@@ -170,6 +220,7 @@ function homeAction(a,v,el){
    case 'hbStart':hbStart();return true;
    case 'hbTeaOpen':hbMenu($('#hb-tea-list')?.hidden);return true;
    case 'hbTeaPick':hbTeaPick(v);return true;
+   case 'hbFact':hbFactShow();hbFactTick();return true;
    case 'hbWare':{const w=store.settings.vessels.find(x=>x.id===v);if(!w)return true;H.vesselId=v;H.style=null;
      if(S?.home){S.vesselId=w.id;S.vesselType=w.type;S.vesselName=w.name;if(!S.touched.has('ml')&&w.ml&&HB_SIZED.includes(S.style))S.steeps.forEach(b=>b.ml=w.ml);hbWareRedraw();hbRerow()}
      else{if(!H.gTouched)H.g=null;renderHome()}return true}

@@ -3,6 +3,7 @@ function setView(v,opts={}){
   // Home is the shelf unless Settings → Home page picks Brew today
   if(v==='home'&&!homeOn()&&!opts.force)v='shelf';
   if(state.view==='brew'&&v!=='brew'){tReset();S=null;$('#view-brew').innerHTML=''}
+  if(v==='home'&&S?.home&&!brewDirty())hbClear(); // after a brew is logged, start fresh
   hbEnd();
   state.view=v;document.body.dataset.view=v;if(v==='tea'){state.teaId=opts.teaId;state.teaStyle=null;state.teaSrc='typical'}if(v==='guide'&&opts.gSel){state.gSel=opts.gSel;state.gStyle=opts.gStyle||null;state.gq=''}
   const tid=v==='brew'?S?.teaId:state.teaId;const tab=v==='tea'||v==='brew'?(teaById(tid)?.finished?'library':'shelf'):v;$$('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===tab));$('#gearBtn')?.setAttribute('aria-pressed',v==='settings');
