@@ -1040,7 +1040,7 @@ body[data-view="home"] main.wrap{max-width:1240px}
 body[data-view="home"] .fab{display:none}
 #view-home{display:grid;gap:16px}
 .hb-top{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px}
-.hb-sel{position:relative;flex:0 1 280px;min-width:200px}
+.hb-sel{position:relative;flex:0 1 360px;min-width:220px}
 .hb-sel-btn{display:flex;align-items:center;gap:9px;height:44px;padding:0 38px 0 12px;border-radius:12px;font-weight:600;text-align:left;cursor:pointer}
 .hb-sel-btn[aria-expanded="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .hb-sel-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1073,6 +1073,10 @@ body[data-view="home"] .fab{display:none}
 .hb-go{flex:none;height:44px;padding:0 22px;border-radius:14px;font-size:15px}
 .hb-go svg{width:17px;height:17px}
 .hb-bar{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
+.hb-rec{display:grid;gap:4px;min-width:0}
+.hb-rec-h{display:flex;align-items:baseline;gap:4px 10px;flex-wrap:wrap}
+.hb-rec-h .eyebrow{color:var(--accent)}
+.hb-rec-sub{font-size:12px;color:var(--ink-3)}
 .hb-hint{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;font-size:13.5px;min-width:0}
 .hb-hint b{color:var(--ink-2)}
 #view-home .bw-timer{min-width:320px;justify-content:space-between}

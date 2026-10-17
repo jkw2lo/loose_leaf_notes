@@ -34,7 +34,8 @@ function renderHome(){
      :`<button type="button" class="btn primary hb-go" data-a="hbStart" data-mock="act.button" ${t?'':'disabled'}>Start brewing</button>`}
    </div>
    <div class="hb-bar" data-arr-item="timer" data-arr-label="Guide and timer">
-    <p class="hb-hint muted" id="hb-hint">${t?hbHint(t,style):'Pick a tea to see its brewing guide.'}</p>
+    <div class="hb-rec">${t?`<span class="hb-rec-h"><span class="eyebrow">Recommended</span><span class="hb-rec-sub">${on?'adjust any brew below to override':'teaware, leaf and method are filled in from the guide · click any to override'}</span></span>`:''}
+     <p class="hb-hint muted" id="hb-hint">${t?hbHint(t,style):'Pick a tea to see its brewing guide.'}</p></div>
     <div class="bw-timer${on?'':' idle'}" id="bw-timer" data-mock="ctl.timer" data-mock-label="Timer">${on?'':hbIdleTimer()}</div>
    </div>
    <section class="hb-region" aria-label="Brews" data-arr-item="brews" data-arr-label="Brew section" data-mock="note.region" data-mock-label="Brew Section">${on?hbRow():hbEmpty(t)}</section>
